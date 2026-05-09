@@ -167,9 +167,9 @@ function initCharts() {
     xAxis: darkXAxis(['计科','软工','大数据','AI','网安']),
     yAxis: { ...darkYAxis(), axisLabel: { color: '#8899aa', fontSize: 11, formatter: '{value}%' } },
     series: [
-      { name: '已签约', type: 'bar', data: [72,68,65,78,70], barWidth: '40%', itemStyle: { color: '#67C23A', borderRadius: [3,3,0,0] } },
-      { name: '面试中', type: 'bar', data: [15,18,20,12,16], barWidth: '40%', itemStyle: { color: '#409EFF', borderRadius: [3,3,0,0] } },
-      { name: '未就业', type: 'bar', data: [13,14,15,10,14], barWidth: '40%', itemStyle: { color: '#E6A23C', borderRadius: [3,3,0,0] } },
+      { name: '已签约', type: 'bar', data: [72,68,65,78,70], barMaxWidth: 24, itemStyle: { color: '#67C23A', borderRadius: [3,3,0,0] } },
+      { name: '面试中', type: 'bar', data: [15,18,20,12,16], barMaxWidth: 24, itemStyle: { color: '#409EFF', borderRadius: [3,3,0,0] } },
+      { name: '未就业', type: 'bar', data: [13,14,15,10,14], barMaxWidth: 24, itemStyle: { color: '#E6A23C', borderRadius: [3,3,0,0] } },
     ]
   })
   charts.push(ch7)
