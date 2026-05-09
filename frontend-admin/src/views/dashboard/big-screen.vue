@@ -251,9 +251,9 @@ onUnmounted(() => {
   border-bottom: 1px solid rgba(255,255,255,0.06);
   flex-shrink: 0;
 }
-.chart { flex: 1; min-height: 0; }
+.chart { height: 260px; }
 
-.scroll-list { flex: 1; overflow-y: auto; min-height: 0; }
+.scroll-list { height: 260px; overflow-y: auto; }
 .scroll-item {
   display: flex; align-items: center; gap: 8px;
   padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
