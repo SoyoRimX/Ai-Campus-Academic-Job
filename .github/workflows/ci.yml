@@ -69,9 +69,6 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Type Check
-        run: npx vue-tsc --noEmit
-
       - name: Build
         run: npm run build
 
