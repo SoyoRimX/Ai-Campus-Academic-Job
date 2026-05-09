@@ -86,11 +86,24 @@
               <el-icon><Microphone /></el-icon>
               {{ recording ? '松开结束' : '按住说话' }}
             </el-button>
-            <p class="hint">按住按钮开始录音，松开后自动识别并发送</p>
+            <p class="hint">按住按钮开始录音，松开后识别为文字，确认后发送</p>
           </div>
-        </div>
-        <div class="transcript" v-if="currentAnswer">
-          <el-tag>识别结果：{{ currentAnswer }}</el-tag>
+          <div class="voice-input-area" v-if="currentAnswer || voiceText">
+            <el-input
+              v-model="voiceText"
+              type="textarea"
+              :rows="3"
+              placeholder="语音识别结果，可修改后发送..."
+              maxlength="500"
+              show-word-limit
+            />
+            <div class="voice-actions">
+              <el-button @click="clearVoiceText" :disabled="!voiceText">清空</el-button>
+              <el-button type="primary" @click="sendVoiceAnswer" :disabled="!voiceText.trim()">
+                确认发送 <el-icon><Promotion /></el-icon>
+              </el-button>
+            </div>
+          </div>
         </div>
       </div>
     </el-card>
@@ -149,6 +162,7 @@ const improvements = ref<string[]>([])
 const qaList = ref<{ question: string; answer: string }[]>([])
 const recording = ref(false)
 const aiSpeaking = ref(false)
+const voiceText = ref('')
 const chatRef = ref<HTMLElement>()
 
 const questions = [
@@ -167,6 +181,7 @@ function startInterview() {
   messages.value = []
   currentQuestion.value = 1
   currentAnswer.value = ''
+  voiceText.value = ''
   qaList.value = []
   if (config.value.interviewType === 1) {
     state.value = 'text-progress'
@@ -217,13 +232,9 @@ function initSpeechRecognition() {
   rec.interimResults = false
   rec.maxAlternatives = 1
   rec.onresult = (event: any) => {
-    currentAnswer.value = event.results[0][0].transcript
+    voiceText.value = event.results[0][0].transcript
     recording.value = false
-    ElMessage.success('语音识别完成')
-    // Auto-send in voice mode
-    if (state.value === 'voice-progress') {
-      setTimeout(() => sendAnswer(), 500)
-    }
+    ElMessage.success('语音识别完成，请确认后发送')
   }
   rec.onerror = () => {
     recording.value = false
@@ -245,6 +256,17 @@ function stopRecord() {
     recognition.stop()
     recording.value = false
   }
+}
+
+function sendVoiceAnswer() {
+  if (!voiceText.value.trim()) return
+  currentAnswer.value = voiceText.value.trim()
+  voiceText.value = ''
+  sendAnswer()
+}
+
+function clearVoiceText() {
+  voiceText.value = ''
 }
 
 function submitAndEnd() {
@@ -304,7 +326,9 @@ const scoreColor = ref('#67C23A')
 .voice-controls .el-button { width: 120px; height: 120px; border-radius: 50%; font-size: 16px; }
 .voice-controls .recording { animation: pulse 1s infinite; }
 .hint { color: #909399; font-size: 13px; margin-top: 12px; }
-.transcript { margin-top: 16px; }
+.voice-input-area { margin: 16px auto 0; max-width: 500px; }
+.voice-input-area :deep(.el-textarea__inner) { font-size: 15px; line-height: 1.6; }
+.voice-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
 
 .result-card { text-align: center; }
 .result-header { margin: 20px 0; }
