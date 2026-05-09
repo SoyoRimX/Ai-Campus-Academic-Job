@@ -15,6 +15,10 @@
           <el-icon><DataAnalysis /></el-icon>
           <span>仪表盘</span>
         </el-menu-item>
+        <el-menu-item index="/big-screen">
+          <el-icon><Monitor /></el-icon>
+          <span>校方大屏</span>
+        </el-menu-item>
 
         <el-sub-menu index="/academic">
           <template #title>

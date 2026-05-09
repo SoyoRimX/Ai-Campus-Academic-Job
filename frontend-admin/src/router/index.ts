@@ -20,6 +20,12 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '仪表盘', icon: 'DataAnalysis' }
       },
       {
+        path: 'big-screen',
+        name: 'BigScreen',
+        component: () => import('@/views/dashboard/big-screen.vue'),
+        meta: { title: '校方大屏', icon: 'Monitor' }
+      },
+      {
         path: 'academic/student',
         name: 'StudentList',
         component: () => import('@/views/academic/student/index.vue'),

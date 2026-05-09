@@ -204,14 +204,47 @@ function simulateAiSpeaking() {
   setTimeout(() => { aiSpeaking.value = false }, 3000)
 }
 
+let recognition: any = null
+
+function initSpeechRecognition() {
+  const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+  if (!SpeechRecognition) {
+    ElMessage.warning('浏览器不支持语音识别，请使用 Chrome 浏览器')
+    return null
+  }
+  const rec = new SpeechRecognition()
+  rec.lang = 'zh-CN'
+  rec.interimResults = false
+  rec.maxAlternatives = 1
+  rec.onresult = (event: any) => {
+    currentAnswer.value = event.results[0][0].transcript
+    recording.value = false
+    ElMessage.success('语音识别完成')
+    // Auto-send in voice mode
+    if (state.value === 'voice-progress') {
+      setTimeout(() => sendAnswer(), 500)
+    }
+  }
+  rec.onerror = () => {
+    recording.value = false
+    ElMessage.error('语音识别失败，请重试')
+  }
+  rec.onend = () => { recording.value = false }
+  return rec
+}
+
 function startRecord() {
+  if (!recognition) recognition = initSpeechRecognition()
+  if (!recognition) return
   recording.value = true
-  ElMessage.info('语音识别功能需要接入微信小程序或浏览器 Speech API')
+  recognition.start()
 }
 
 function stopRecord() {
-  recording.value = false
-  currentAnswer.value = '语音识别结果（模拟）'
+  if (recognition) {
+    recognition.stop()
+    recording.value = false
+  }
 }
 
 function submitAndEnd() {

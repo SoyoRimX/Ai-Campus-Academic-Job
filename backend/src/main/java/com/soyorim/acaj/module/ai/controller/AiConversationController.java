@@ -3,6 +3,7 @@ package com.soyorim.acaj.module.ai.controller;
 import com.soyorim.acaj.common.Result;
 import com.soyorim.acaj.module.ai.entity.AiConversation;
 import com.soyorim.acaj.module.ai.service.AiConversationService;
+import com.soyorim.acaj.module.ai.service.AiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class AiConversationController {
 
     private final AiConversationService aiConversationService;
+    private final AiService aiService;
 
     @PostMapping("/chat")
     public Result<Map<String, Object>> chat(@RequestBody Map<String, Object> body) {
@@ -39,21 +41,21 @@ public class AiConversationController {
         userMsg.setTokens(message.length());
         aiConversationService.save(userMsg);
 
-        // Generate dummy AI reply
-        String dummyReply = "您好！我是校园AI助手。您的问题已收到：\"" + message + "\"。我会尽快为您提供帮助。";
+        // Call AI service (fallback to rule engine if not configured)
+        String reply = aiService.chat(message);
         AiConversation aiMsg = new AiConversation();
         aiMsg.setUserId(userId);
         aiMsg.setSessionId(sessionId);
         aiMsg.setRole("assistant");
-        aiMsg.setContent(dummyReply);
-        aiMsg.setTokens(dummyReply.length());
+        aiMsg.setContent(reply);
+        aiMsg.setTokens(reply.length());
         aiMsg.setCreateTime(LocalDateTime.now());
         aiConversationService.save(aiMsg);
 
         Map<String, Object> result = new HashMap<>();
         result.put("sessionId", sessionId);
-        result.put("reply", dummyReply);
-        result.put("tokens", dummyReply.length());
+        result.put("reply", reply);
+        result.put("tokens", reply.length());
         return Result.ok(result);
     }
 

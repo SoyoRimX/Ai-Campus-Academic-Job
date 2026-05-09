@@ -2,16 +2,14 @@ package com.soyorim.acaj.module.employment.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.soyorim.acaj.common.Result;
+import com.soyorim.acaj.module.ai.service.AiService;
 import com.soyorim.acaj.module.employment.entity.EmployInterview;
 import com.soyorim.acaj.module.employment.service.EmployInterviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/employ")
@@ -19,6 +17,7 @@ import java.util.Random;
 public class EmployInterviewController {
 
     private final EmployInterviewService employInterviewService;
+    private final AiService aiService;
 
     @PostMapping("/interview/start")
     public Result<Map<String, Object>> start(@RequestBody Map<String, Object> body) {
@@ -26,14 +25,10 @@ public class EmployInterviewController {
         Long jobId = Long.valueOf(body.get("jobId").toString());
         Integer interviewType = Integer.valueOf(body.get("interviewType").toString());
 
-        // Dummy interview questions
-        String[] questions = {
-                "请做一个简单的自我介绍，包括您的教育背景和技术专长。",
-                "描述一个您参与过的项目，以及您在其中的角色和贡献。",
-                "您如何看待团队合作？请分享一个团队合作的经历。",
-                "为什么选择应聘这个职位？您认为自己的优势是什么？",
-                "对于未来的职业发展，您有什么规划？"
-        };
+        List<String> questions = aiService.generateInterviewQuestions(
+                body.get("jobTitle") != null ? body.get("jobTitle").toString() : "软件开发",
+                body.get("requiredSkills") != null ? body.get("requiredSkills").toString() : null
+        );
 
         EmployInterview interview = new EmployInterview();
         interview.setStudentId(studentId);
@@ -63,18 +58,17 @@ public class EmployInterviewController {
         interview.setAnswers(answers);
         interview.setEndTime(LocalDateTime.now());
 
-        // Dummy scoring
-        int score = 60 + new Random().nextInt(41);
-        interview.setScore(score);
-
-        String feedback;
-        if (score >= 85) {
-            feedback = "表现优秀！回答条理清晰，技术基础扎实，展现出良好的沟通能力和职业素养。";
-        } else if (score >= 70) {
-            feedback = "表现良好。基本问题回答到位，建议在技术深度和项目经验表达上进一步加强。";
-        } else {
-            feedback = "需要继续努力。建议加强技术基础的学习，多参与实际项目积累经验，提升面试表达能力。";
+        // AI 评估面试
+        List<Map<String, String>> qaList = new ArrayList<>();
+        String[] qs = interview.getQuestions() != null ? interview.getQuestions().split("\\|\\|") : new String[0];
+        String[] as = answers.split("\\|\\|");
+        for (int i = 0; i < Math.min(qs.length, as.length); i++) {
+            qaList.add(Map.of("question", qs[i], "answer", as[i]));
         }
+        Map<String, Object> evaluation = aiService.evaluateInterview(qaList);
+        int score = evaluation.get("score") != null ? ((Number) evaluation.get("score")).intValue() : 80;
+        String feedback = evaluation.get("feedback") != null ? evaluation.get("feedback").toString() : "面试完成";
+        interview.setScore(score);
         interview.setFeedback(feedback);
 
         // Calculate duration in seconds
