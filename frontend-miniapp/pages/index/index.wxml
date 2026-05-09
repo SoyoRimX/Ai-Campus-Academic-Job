@@ -1,0 +1,80 @@
+<!-- pages/index/index.wxml -->
+<view class="page">
+
+  <!-- Header -->
+  <view class="header">
+    <view class="header-bg"></view>
+    <view class="header-content">
+      <view class="avatar-placeholder">
+        <text class="avatar-emoji">👤</text>
+      </view>
+      <view class="greeting">
+        <text class="greeting-text">你好，{{greeting}}</text>
+        <text class="greeting-sub">欢迎使用 AI 校园助手</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- Menu Grid 2x2 -->
+  <view class="menu-grid">
+    <view class="menu-card" bindtap="navigateTo" data-url="/pages/academic/index">
+      <text class="menu-icon">📚</text>
+      <text class="menu-label">学业情况</text>
+    </view>
+    <view class="menu-card" bindtap="navigateTo" data-url="/pages/resume/index">
+      <text class="menu-icon">📄</text>
+      <text class="menu-label">我的简历</text>
+    </view>
+    <view class="menu-card" bindtap="navigateTo" data-url="/pages/jobs/index">
+      <text class="menu-icon">💼</text>
+      <text class="menu-label">职位搜索</text>
+    </view>
+    <view class="menu-card" bindtap="navigateTo" data-url="/pages/interview/index">
+      <text class="menu-icon">🤖</text>
+      <text class="menu-label">AI面试</text>
+    </view>
+  </view>
+
+  <!-- Latest Warnings -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">⚠️ 最新预警</text>
+      <text class="section-more" bindtap="navigateTo" data-url="/pages/academic/index">查看全部</text>
+    </view>
+    <view wx:if="{{warnings.length > 0}}" class="card-list">
+      <view class="card-item" wx:for="{{warnings}}" wx:key="id">
+        <view class="card-item-left">
+          <text class="card-item-title">{{item.title}}</text>
+          <text class="card-item-desc">{{item.desc}}</text>
+        </view>
+        <text class="tag tag-{{item.tagType}}">{{item.tag}}</text>
+      </view>
+    </view>
+    <view wx:else class="empty-state">
+      <text class="empty-icon">🎉</text>
+      <text class="empty-text">暂无预警</text>
+    </view>
+  </view>
+
+  <!-- Recommended Jobs -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">🔥 推荐岗位</text>
+      <text class="section-more" bindtap="navigateTo" data-url="/pages/jobs/index">查看全部</text>
+    </view>
+    <view wx:if="{{jobs.length > 0}}" class="card-list">
+      <view class="card-item" wx:for="{{jobs}}" wx:key="id">
+        <view class="card-item-left">
+          <text class="card-item-title">{{item.title}}</text>
+          <text class="card-item-desc">{{item.company}} · {{item.location}}</text>
+        </view>
+        <text class="card-item-salary">{{item.salary}}</text>
+      </view>
+    </view>
+    <view wx:else class="empty-state">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无推荐岗位</text>
+    </view>
+  </view>
+
+</view>

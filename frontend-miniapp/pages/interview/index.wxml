@@ -1,0 +1,101 @@
+<view class="interview-container">
+  <!-- ========== 未开始状态 ========== -->
+  <view class="idle-state" wx:if="{{status === 'idle'}}">
+    <view class="welcome-card">
+      <view class="welcome-icon">🎙️</view>
+      <view class="welcome-title">AI 模拟面试练习</view>
+      <view class="welcome-desc">通过 AI 模拟真实面试场景，提升面试技巧和应变能力。支持文字和语音两种模式，随时随地练习。</view>
+    </view>
+
+    <view class="config-card">
+      <view class="config-item">
+        <view class="config-label">面试模式</view>
+        <view class="mode-picker">
+          <view class="mode-option {{interviewType === 'text' ? 'active' : ''}}" bindtap="selectMode" data-type="text">
+            <view class="mode-icon">💬</view>
+            <view class="mode-name">文字面试</view>
+          </view>
+          <view class="mode-option {{interviewType === 'voice' ? 'active' : ''}}" bindtap="selectMode" data-type="voice">
+            <view class="mode-icon">🎤</view>
+            <view class="mode-name">语音面试</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="config-item">
+        <view class="config-label">目标岗位（可选）</view>
+        <picker mode="selector" range="{{jobList}}" range-key="name" bindchange="selectJob">
+          <view class="job-picker">
+            <text>{{selectedJobName || '请选择目标岗位'}}</text>
+            <text class="picker-arrow">›</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <button class="start-btn" bindtap="startInterview">开始面试</button>
+  </view>
+
+  <!-- ========== 面试进行中 ========== -->
+  <view class="in-progress-state" wx:if="{{status === 'in_progress'}}">
+    <view class="interview-header">
+      <view class="header-title">AI 模拟面试</view>
+      <view class="header-progress">第 {{currentQuestionIndex + 1}} / {{totalQuestions}} 题</view>
+      <button class="end-btn" bindtap="submitInterview" size="mini">结束面试</button>
+    </view>
+
+    <scroll-view class="msg-area" scroll-y scroll-into-view="msg-{{messages.length - 1}}" scroll-with-animation>
+      <view wx:if="{{messages.length === 0}}" class="empty-msg">面试准备开始，请等待 AI 提问…</view>
+      <block wx:for="{{messages}}" wx:key="id">
+        <view class="msg-item {{item.role === 'ai' ? 'ai-msg' : 'user-msg'}}" id="msg-{{index}}">
+          <view class="msg-bubble {{item.role === 'ai' ? 'bubble-ai' : 'bubble-user'}}">
+            <text>{{item.content}}</text>
+          </view>
+          <view class="msg-role">{{item.role === 'ai' ? 'AI 面试官' : '我'}}</view>
+        </view>
+      </block>
+      <view wx:if="{{isThinking}}" class="msg-item ai-msg">
+        <view class="msg-bubble bubble-ai thinking-bubble">
+          <text>思考中…</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 文字模式输入栏 -->
+    <view class="input-bar" wx:if="{{interviewType === 'text'}}">
+      <input class="msg-input" value="{{inputText}}" bindinput="onInputChange" placeholder="请输入你的回答…" confirm-type="send" bindconfirm="sendAnswer" adjust-position="{{true}}" />
+      <button class="send-btn" bindtap="sendAnswer" disabled="{{!inputText.trim()}}">发送</button>
+    </view>
+
+    <!-- 语音模式输入栏 -->
+    <view class="input-bar" wx:if="{{interviewType === 'voice'}}">
+      <button class="voice-btn" bindtouchstart="onVoiceStart" bindtouchend="onVoiceEnd">按住说话</button>
+    </view>
+  </view>
+
+  <!-- ========== 面试完成 ========== -->
+  <view class="completed-state" wx:if="{{status === 'completed'}}">
+    <view class="score-section">
+      <view class="score-circle">
+        <view class="score-number">{{score}}</view>
+        <view class="score-unit">分</view>
+      </view>
+      <view class="score-label">综合评分</view>
+    </view>
+
+    <view class="feedback-card">
+      <view class="feedback-title">AI 面试评价</view>
+      <view class="feedback-content">
+        <block wx:for="{{feedbackList}}" wx:key="idx">
+          <view class="feedback-item">
+            <view class="feedback-dot"></view>
+            <text>{{item}}</text>
+          </view>
+        </block>
+        <view wx:if="{{!feedbackList.length}}" class="feedback-empty">暂无评价</view>
+      </view>
+    </view>
+
+    <button class="retry-btn" bindtap="resetInterview">再来一次</button>
+  </view>
+</view>

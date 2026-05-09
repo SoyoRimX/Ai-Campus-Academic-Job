@@ -1,0 +1,258 @@
+/* pages/academic/index.wxss */
+
+.page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 24rpx;
+  padding-bottom: 40rpx;
+}
+
+/* Card base */
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+/* Student Info Card */
+.info-card {
+  padding: 30rpx;
+}
+
+.info-top {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-placeholder {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: #E8F4FD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+}
+
+.avatar-emoji {
+  font-size: 44rpx;
+}
+
+.info-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-name {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.info-detail {
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* GPA Card */
+.gpa-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 30rpx;
+}
+
+.gpa-label {
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 12rpx;
+}
+
+.gpa-value {
+  font-size: 80rpx;
+  font-weight: bold;
+  color: #4A90D9;
+  line-height: 1;
+}
+
+.gpa-scale {
+  margin-top: 8rpx;
+}
+
+.gpa-max {
+  font-size: 28rpx;
+  color: #bbb;
+}
+
+/* Credit Progress */
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.progress-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.progress-num {
+  font-size: 28rpx;
+  color: #4A90D9;
+  font-weight: bold;
+}
+
+.progress-bar-bg {
+  height: 16rpx;
+  background: #eee;
+  border-radius: 8rpx;
+  overflow: hidden;
+  margin-bottom: 12rpx;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4A90D9, #6CB3F5);
+  border-radius: 8rpx;
+  transition: width 0.5s ease;
+}
+
+.progress-hint {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* Stats Row */
+.stats-row {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.stat-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.stat-value {
+  font-size: 52rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.stat-card.fail .stat-value {
+  color: #F56C6C;
+}
+
+.stat-card.earned .stat-value {
+  color: #67C23A;
+}
+
+/* Section Title */
+.section {
+  padding: 10rpx 0 20rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  padding-left: 4rpx;
+}
+
+/* Warning List */
+.warning-list {
+  margin-bottom: 20rpx;
+}
+
+.warning-item {
+  padding: 28rpx 30rpx;
+}
+
+.warning-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.warning-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.warning-desc {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 12rpx;
+  line-height: 1.5;
+}
+
+.warning-time {
+  font-size: 22rpx;
+  color: #bbb;
+}
+
+/* Tags */
+.tag {
+  padding: 6rpx 18rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  white-space: nowrap;
+}
+
+.tag-red {
+  background: #FEF0F0;
+  color: #F56C6C;
+}
+
+.tag-orange {
+  background: #FDF6EC;
+  color: #E6A23C;
+}
+
+.tag-blue {
+  background: #E8F4FD;
+  color: #4A90D9;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+  background: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}

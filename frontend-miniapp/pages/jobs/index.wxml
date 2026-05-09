@@ -1,0 +1,53 @@
+<view class="container">
+  <!-- Search bar -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <image class="search-icon" src="/images/search.png" mode="aspectFit"></image>
+      <input
+        class="search-input"
+        placeholder="搜索职位、公司"
+        placeholder-class="placeholder"
+        value="{{keyword}}"
+        bindinput="onKeywordInput"
+        bindconfirm="onSearch"
+        confirm-type="search"
+      />
+      <view class="search-clear" wx:if="{{keyword}}" bindtap="onClear">
+        <text>×</text>
+      </view>
+    </view>
+    <view class="search-btn" bindtap="onSearch">
+      <text>搜索</text>
+    </view>
+  </view>
+
+  <!-- Job list -->
+  <scroll-view class="job-list" scroll-y="true">
+    <view class="job-card" wx:for="{{jobs}}" wx:key="id" bindtap="onTapJob" data-id="{{item.id}}">
+      <view class="job-top">
+        <view class="job-info">
+          <text class="job-title">{{item.jobTitle}}</text>
+          <text class="job-company">{{item.company}}</text>
+        </view>
+        <text class="job-salary">{{item.salaryRange}}</text>
+      </view>
+      <view class="job-meta">
+        <text class="job-city">{{item.city}}</text>
+        <text class="job-tag">{{item.education}}</text>
+        <text class="job-tag">{{item.experience}}</text>
+      </view>
+      <text class="job-desc">{{item.description}}</text>
+    </view>
+
+    <!-- Load more indicator -->
+    <view class="load-more">
+      <text wx:if="{{loading}}">加载中...</text>
+      <text wx:elif="{{!hasMore}}">— 没有更多了 —</text>
+    </view>
+
+    <!-- Empty state -->
+    <view class="empty-result" wx:if="{{!loading && jobs.length === 0}}">
+      <text class="empty-text">暂无相关职位</text>
+    </view>
+  </scroll-view>
+</view>

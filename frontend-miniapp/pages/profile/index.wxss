@@ -1,0 +1,246 @@
+/* ========== 容器 ========== */
+.profile-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+/* ========== 未登录 ========== */
+.login-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40rpx;
+}
+
+.login-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background: #e8e8e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64rpx;
+  margin-bottom: 30rpx;
+}
+
+.login-tip {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 40rpx;
+}
+
+.login-btn {
+  width: 400rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  background: linear-gradient(135deg, #07C160 0%, #06AD56 100%);
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 600;
+  border-radius: 44rpx;
+  border: none;
+  box-shadow: 0 8rpx 20rpx rgba(7, 193, 96, 0.3);
+}
+
+.login-btn::after {
+  border: none;
+}
+
+/* ========== 用户信息头部 ========== */
+.profile-header {
+  position: relative;
+  padding-bottom: 30rpx;
+}
+
+.header-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 260rpx;
+  background: linear-gradient(135deg, #4A90D9 0%, #357ABD 100%);
+  border-radius: 0 0 40rpx 40rpx;
+}
+
+.header-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 60rpx 40rpx 0;
+  z-index: 1;
+}
+
+.avatar-wrapper {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(255, 255, 255, 0.6);
+  overflow: hidden;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #fff;
+}
+
+.user-detail {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10rpx;
+}
+
+.user-info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.user-no,
+.user-major {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ========== 菜单列表 ========== */
+.menu-list {
+  background: #fff;
+  border-radius: 20rpx;
+  margin: 20rpx 24rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx 28rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+  transition: background 0.15s;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item:active {
+  background: #f8f8f8;
+}
+
+.menu-left {
+  display: flex;
+  align-items: center;
+}
+
+.menu-icon {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  margin-right: 20rpx;
+}
+
+.icon-resume {
+  background: #eef4fd;
+}
+
+.icon-interview {
+  background: #fdf2ee;
+}
+
+.icon-warning {
+  background: #fef6ee;
+}
+
+.icon-apply {
+  background: #eefaf3;
+}
+
+.icon-counselor {
+  background: #f5eefd;
+}
+
+.menu-text {
+  font-size: 30rpx;
+  color: #333;
+}
+
+.menu-right {
+  display: flex;
+  align-items: center;
+}
+
+.badge {
+  min-width: 40rpx;
+  height: 36rpx;
+  line-height: 36rpx;
+  text-align: center;
+  background: #ff6b6b;
+  color: #fff;
+  font-size: 22rpx;
+  border-radius: 18rpx;
+  padding: 0 10rpx;
+  margin-right: 12rpx;
+}
+
+.badge-warning {
+  background: #f0ad4e;
+}
+
+.menu-arrow {
+  font-size: 36rpx;
+  color: #ccc;
+}
+
+/* ========== 退出登录 ========== */
+.logout-section {
+  padding: 40rpx 24rpx;
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+}
+
+.logout-btn {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  background: #fff;
+  color: #ff6b6b;
+  font-size: 30rpx;
+  font-weight: 500;
+  border-radius: 44rpx;
+  border: 2rpx solid #ff6b6b;
+}
+
+.logout-btn::after {
+  border: none;
+}

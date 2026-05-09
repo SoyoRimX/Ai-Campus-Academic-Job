@@ -1,0 +1,71 @@
+<!-- pages/academic/index.wxml -->
+<view class="page">
+
+  <!-- Student Info Card -->
+  <view class="card info-card">
+    <view class="info-top">
+      <view class="avatar-placeholder">
+        <text class="avatar-emoji">👤</text>
+      </view>
+      <view class="info-text">
+        <text class="info-name">{{studentInfo.studentNo}}</text>
+        <text class="info-detail">{{studentInfo.major}} · {{studentInfo.grade}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- GPA Display -->
+  <view class="card gpa-card">
+    <text class="gpa-label">平均绩点 (GPA)</text>
+    <text class="gpa-value">{{studentInfo.gpa}}</text>
+    <view class="gpa-scale">
+      <text class="gpa-max">/ 4.0</text>
+    </view>
+  </view>
+
+  <!-- Credit Progress -->
+  <view class="card progress-card">
+    <view class="progress-header">
+      <text class="progress-title">学分进度</text>
+      <text class="progress-num">{{studentInfo.totalCredits}} / {{studentInfo.requiredCredits}}</text>
+    </view>
+    <view class="progress-bar-bg">
+      <view class="progress-bar-fill" style="width: {{creditPercent}}%"></view>
+    </view>
+    <text class="progress-hint">距毕业要求还需 {{studentInfo.requiredCredits - studentInfo.totalCredits}} 学分</text>
+  </view>
+
+  <!-- Stats Row -->
+  <view class="stats-row">
+    <view class="stat-card fail">
+      <text class="stat-value">{{studentInfo.failCount}}</text>
+      <text class="stat-label">不及格科目数</text>
+    </view>
+    <view class="stat-card earned">
+      <text class="stat-value">{{studentInfo.totalCredits}}</text>
+      <text class="stat-label">已获学分</text>
+    </view>
+  </view>
+
+  <!-- Warnings Section -->
+  <view class="section">
+    <text class="section-title">⚠️ 预警信息</text>
+  </view>
+
+  <view wx:if="{{warnings.length > 0}}" class="warning-list">
+    <view class="card warning-item" wx:for="{{warnings}}" wx:key="id">
+      <view class="warning-top">
+        <text class="warning-title">{{item.title}}</text>
+        <text class="tag tag-{{item.tagType}}">{{item.tagText}}</text>
+      </view>
+      <text class="warning-desc">{{item.description}}</text>
+      <text class="warning-time">{{item.time}}</text>
+    </view>
+  </view>
+
+  <view wx:else class="empty-state">
+    <text class="empty-icon">🎉</text>
+    <text class="empty-text">暂无学业预警</text>
+  </view>
+
+</view>

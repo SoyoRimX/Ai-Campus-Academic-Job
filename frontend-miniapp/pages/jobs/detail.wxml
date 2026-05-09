@@ -1,0 +1,57 @@
+<view class="container">
+  <!-- Job header -->
+  <view class="detail-header">
+    <text class="detail-title">{{job.jobTitle}}</text>
+    <view class="header-row">
+      <text class="detail-company">{{job.company}}</text>
+      <text class="detail-salary">{{job.salaryRange}}</text>
+    </view>
+  </view>
+
+  <!-- Info card -->
+  <view class="card info-card">
+    <view class="info-item">
+      <text class="info-label">工作城市</text>
+      <text class="info-val">{{job.city || '不限'}}</text>
+    </view>
+    <view class="info-item">
+      <text class="info-label">学历要求</text>
+      <text class="info-val">{{job.education || '不限'}}</text>
+    </view>
+    <view class="info-item">
+      <text class="info-label">经验要求</text>
+      <text class="info-val">{{job.experience || '不限'}}</text>
+    </view>
+    <view class="info-item" wx:if="{{job.jobType}}">
+      <text class="info-label">工作类型</text>
+      <text class="info-val">{{jobTypeMap[job.jobType] || job.jobType}}</text>
+    </view>
+  </view>
+
+  <!-- Required skills -->
+  <view class="card section-card" wx:if="{{job.skills && job.skills.length}}">
+    <view class="section-title">
+      <view class="title-bar"></view>
+      <text>技能要求</text>
+    </view>
+    <view class="skills-wrap">
+      <text class="skill-tag" wx:for="{{job.skills}}" wx:key="*this">{{item}}</text>
+    </view>
+  </view>
+
+  <!-- Job description -->
+  <view class="card section-card">
+    <view class="section-title">
+      <view class="title-bar"></view>
+      <text>职位描述</text>
+    </view>
+    <view class="desc-content">{{job.description || '暂无描述'}}</view>
+  </view>
+
+  <!-- Bottom fixed bar -->
+  <view class="bottom-bar">
+    <view class="btn-apply" bindtap="onApply">
+      <text>立即投递</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,91 @@
+<view class="profile-container">
+  <!-- ========== 未登录 ========== -->
+  <view class="login-state" wx:if="{{!isLoggedIn}}">
+    <view class="login-placeholder">
+      <view class="login-avatar">👤</view>
+      <view class="login-tip">登录后查看更多信息</view>
+      <button class="login-btn" bindtap="handleLogin">微信授权登录</button>
+    </view>
+  </view>
+
+  <!-- ========== 已登录 ========== -->
+  <block wx:if="{{isLoggedIn}}">
+    <!-- 用户信息头部 -->
+    <view class="profile-header">
+      <view class="header-bg"></view>
+      <view class="header-content">
+        <view class="avatar-wrapper">
+          <image class="avatar" src="{{userInfo.avatar || ''}}" mode="aspectFill" />
+          <view class="avatar-placeholder" wx:if="{{!userInfo.avatar}}">{{userInfo.name ? userInfo.name.charAt(0) : 'U'}}</view>
+        </view>
+        <view class="user-detail">
+          <view class="user-name">{{userInfo.name || '未设置'}}</view>
+          <view class="user-info-row">
+            <text class="user-no">学号: {{userInfo.studentNo || userInfo.studentCode || '—'}}</text>
+            <text class="user-major">{{userInfo.major || userInfo.department || '—'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 菜单列表 -->
+    <view class="menu-list">
+      <view class="menu-item" bindtap="navigateTo" data-url="/pages/resume/index">
+        <view class="menu-left">
+          <view class="menu-icon icon-resume">📄</view>
+          <text class="menu-text">我的简历</text>
+        </view>
+        <view class="menu-right">
+          <text class="menu-arrow">›</text>
+        </view>
+      </view>
+
+      <view class="menu-item" bindtap="navigateTo" data-url="/pages/interview/index">
+        <view class="menu-left">
+          <view class="menu-icon icon-interview">🎤</view>
+          <text class="menu-text">面试记录</text>
+        </view>
+        <view class="menu-right">
+          <text class="badge" wx:if="{{interviewCount > 0}}">{{interviewCount}}</text>
+          <text class="menu-arrow">›</text>
+        </view>
+      </view>
+
+      <view class="menu-item" bindtap="navigateTo" data-url="/pages/academic/index">
+        <view class="menu-left">
+          <view class="menu-icon icon-warning">⚠️</view>
+          <text class="menu-text">学业预警</text>
+        </view>
+        <view class="menu-right">
+          <text class="badge badge-warning" wx:if="{{warningCount > 0}}">{{warningCount}}</text>
+          <text class="menu-arrow">›</text>
+        </view>
+      </view>
+
+      <view class="menu-item" bindtap="navigateTo" data-url="/pages/jobs/index">
+        <view class="menu-left">
+          <view class="menu-icon icon-apply">📋</view>
+          <text class="menu-text">投递记录</text>
+        </view>
+        <view class="menu-right">
+          <text class="menu-arrow">›</text>
+        </view>
+      </view>
+
+      <view class="menu-item" bindtap="contactCounselor">
+        <view class="menu-left">
+          <view class="menu-icon icon-counselor">📞</view>
+          <text class="menu-text">联系辅导员</text>
+        </view>
+        <view class="menu-right">
+          <text class="menu-arrow">›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 退出登录 -->
+    <view class="logout-section">
+      <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+    </view>
+  </block>
+</view>

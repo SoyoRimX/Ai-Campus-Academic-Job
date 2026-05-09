@@ -1,0 +1,103 @@
+<view class="container">
+  <!-- Empty state -->
+  <view class="empty-state" wx:if="{{!resume}}">
+    <image class="empty-icon" src="/images/empty-resume.png" mode="aspectFit"></image>
+    <text class="empty-text">还没有简历，去搜索岗位吧</text>
+  </view>
+
+  <!-- Resume content -->
+  <view class="resume-content" wx:else>
+    <!-- Resume header card -->
+    <view class="card resume-header">
+      <view class="header-top">
+        <text class="resume-title">{{resume.title}}</text>
+        <view class="score-box">
+          <view class="stars">
+            <view class="star {{index < starRating ? 'active' : ''}}" wx:for="{{5}}" wx:key="*this"></view>
+          </view>
+          <text class="score-text">{{resume.aiScore}}分</text>
+        </view>
+      </view>
+      <view class="header-meta">
+        <text class="meta-item">目标岗位：{{resume.targetJob}}</text>
+        <text class="meta-item">目标城市：{{resume.targetCity}}</text>
+      </view>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="card section-card">
+      <view class="section-title">
+        <view class="title-bar"></view>
+        <text>基本信息</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">姓名</text>
+        <text class="info-value">{{basicInfo.name || '未填写'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">手机</text>
+        <text class="info-value">{{basicInfo.phone || '未填写'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">邮箱</text>
+        <text class="info-value">{{basicInfo.email || '未填写'}}</text>
+      </view>
+    </view>
+
+    <!-- 教育背景 -->
+    <view class="card section-card" wx:if="{{parsedContent.education && parsedContent.education.length}}">
+      <view class="section-title">
+        <view class="title-bar"></view>
+        <text>教育背景</text>
+      </view>
+      <view class="edu-item" wx:for="{{parsedContent.education}}" wx:key="*this">
+        <view class="edu-header">
+          <text class="edu-school">{{item.school}}</text>
+          <text class="edu-period">{{item.period}}</text>
+        </view>
+        <text class="edu-major">{{item.major}}</text>
+      </view>
+    </view>
+
+    <!-- 实习经历 -->
+    <view class="card section-card" wx:if="{{parsedContent.internship && parsedContent.internship.length}}">
+      <view class="section-title">
+        <view class="title-bar"></view>
+        <text>实习经历</text>
+      </view>
+      <view class="intern-item" wx:for="{{parsedContent.internship}}" wx:key="*this">
+        <view class="intern-header">
+          <text class="intern-role">{{item.role}}</text>
+          <text class="intern-period">{{item.period}}</text>
+        </view>
+        <text class="intern-company">{{item.company}}</text>
+        <text class="intern-desc" wx:if="{{item.desc}}">{{item.desc}}</text>
+      </view>
+    </view>
+
+    <!-- 技能特长 -->
+    <view class="card section-card" wx:if="{{parsedContent.skills && parsedContent.skills.length}}">
+      <view class="section-title">
+        <view class="title-bar"></view>
+        <text>技能特长</text>
+      </view>
+      <view class="skills-wrap">
+        <text class="skill-tag" wx:for="{{parsedContent.skills}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 自我评价 -->
+    <view class="card section-card" wx:if="{{parsedContent.selfIntro}}">
+      <view class="section-title">
+        <view class="title-bar"></view>
+        <text>自我评价</text>
+      </view>
+      <text class="self-intro">{{parsedContent.selfIntro}}</text>
+    </view>
+
+    <!-- AI optimize button -->
+    <view class="btn-ai" bindtap="onAIOptimize">
+      <text>AI 优化简历</text>
+    </view>
+  </view>
+</view>
