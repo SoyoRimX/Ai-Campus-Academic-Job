@@ -65,6 +65,7 @@ onMounted(() => {
     series: [{
       type: 'pie',
       radius: ['40%', '70%'],
+      label: { show: true, formatter: '{b}\n{d}%' },
       data: [
         { value: 120, name: '已匹配' },
         { value: 80, name: '已投递' },
