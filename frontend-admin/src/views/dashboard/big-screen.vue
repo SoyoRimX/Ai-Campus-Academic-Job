@@ -112,7 +112,7 @@ function initCharts() {
   ch3.setOption({
     tooltip: { trigger: 'item' },
     series: [{ type: 'pie', radius: ['50%','75%'], center: ['50%','55%'],
-      label: { color: '#8899aa', fontSize: 11 },
+      label: { show: true, formatter: '{b}\n{d}%', color: '#8899aa', fontSize: 11 },
       data: [
         { value: 820, name: '已匹配' }, { value: 540, name: '已投递' },
         { value: 320, name: '面试中' }, { value: 186, name: '已录用' }
