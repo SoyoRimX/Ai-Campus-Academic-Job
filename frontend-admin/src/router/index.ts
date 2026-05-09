@@ -56,10 +56,16 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '岗位管理', icon: 'Briefcase' }
       },
       {
+        path: 'employment/interview-simulator',
+        name: 'InterviewSimulator',
+        component: () => import('@/views/employment/interview-simulator/index.vue'),
+        meta: { title: 'AI 模拟面试', icon: 'ChatDotRound' }
+      },
+      {
         path: 'employment/interview',
         name: 'InterviewList',
         component: () => import('@/views/employment/interview/index.vue'),
-        meta: { title: '面试记录', icon: 'ChatDotRound' }
+        meta: { title: '面试记录', icon: 'List' }
       },
       {
         path: 'ai/knowledge',

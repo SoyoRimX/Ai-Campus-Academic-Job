@@ -33,6 +33,7 @@
           </template>
           <el-menu-item index="/employment/resume">简历管理</el-menu-item>
           <el-menu-item index="/employment/job">岗位管理</el-menu-item>
+          <el-menu-item index="/employment/interview-simulator">AI 模拟面试</el-menu-item>
           <el-menu-item index="/employment/interview">面试记录</el-menu-item>
         </el-sub-menu>
 
