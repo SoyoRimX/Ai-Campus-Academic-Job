@@ -4,10 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.soyorim.acaj.common.PageResult;
 import com.soyorim.acaj.common.Result;
+import com.soyorim.acaj.config.security.JwtUtil;
+import com.soyorim.acaj.module.academic.entity.AcademicStudent;
 import com.soyorim.acaj.module.academic.entity.AcademicStudyPlan;
+import com.soyorim.acaj.module.academic.service.AcademicStudentService;
 import com.soyorim.acaj.module.academic.service.AcademicStudyPlanService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/academic")
@@ -15,15 +21,49 @@ import org.springframework.web.bind.annotation.*;
 public class AcademicStudyPlanController {
 
     private final AcademicStudyPlanService studyPlanService;
+    private final AcademicStudentService studentService;
+    private final JwtUtil jwtUtil;
+
+    private Long getCurrentUserId(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            return jwtUtil.getUserId(header.substring(7));
+        }
+        return null;
+    }
+
+    private String getCurrentUserRole(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            return jwtUtil.parseToken(header.substring(7)).get("role", String.class);
+        }
+        return null;
+    }
 
     @GetMapping("/study-plans")
     public Result<PageResult<AcademicStudyPlan>> list(@RequestParam(defaultValue = "1") int page,
                                                        @RequestParam(defaultValue = "10") int size,
-                                                       @RequestParam(required = false) Long studentId) {
+                                                       @RequestParam(required = false) Long studentId,
+                                                       HttpServletRequest request) {
         LambdaQueryWrapper<AcademicStudyPlan> wrapper = new LambdaQueryWrapper<>();
-        if (studentId != null) {
+
+        String role = getCurrentUserRole(request);
+        Long currentUserId = getCurrentUserId(request);
+
+        if ("ROLE_STUDENT".equals(role)) {
+            // 学生只能看自己的（userId → academic_student.id）
+            AcademicStudent stu = studentService.getOne(
+                    new LambdaQueryWrapper<AcademicStudent>().eq(AcademicStudent::getUserId, currentUserId));
+            if (stu != null) {
+                wrapper.eq(AcademicStudyPlan::getStudentId, stu.getId());
+            } else {
+                wrapper.eq(AcademicStudyPlan::getStudentId, -1L); // 无记录
+            }
+        } else if (studentId != null) {
+            // 教师/管理员可以筛选
             wrapper.eq(AcademicStudyPlan::getStudentId, studentId);
         }
+
         wrapper.orderByDesc(AcademicStudyPlan::getCreateTime);
         Page<AcademicStudyPlan> result = studyPlanService.page(new Page<>(page, size), wrapper);
         return Result.ok(PageResult.of(result));

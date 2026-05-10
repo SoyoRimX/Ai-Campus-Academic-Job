@@ -2,9 +2,10 @@
   <div>
     <el-card>
       <div class="toolbar">
-        <el-select v-model="searchForm.studentId" placeholder="筛选学生" clearable style="width:200px" @change="fetchData">
+        <el-select v-if="!isStudent" v-model="searchForm.studentId" placeholder="筛选学生" clearable style="width:200px" @change="fetchData">
           <el-option v-for="s in studentOptions" :key="s.id" :label="s.studentNo + ' ' + s.major" :value="s.id" />
         </el-select>
+        <span v-else></span>
         <el-button type="primary" @click="openAddDialog">添加规划</el-button>
       </div>
 
@@ -90,10 +91,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { getStudyPlans, addStudyPlan, updateStudyPlan, deleteStudyPlan } from '@/api/academic'
 import { getStudents } from '@/api/academic'
 import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
+const isStudent = computed(() => userStore.userInfo?.userType === 0)
 
 const loading = ref(false)
 const tableData = ref<any[]>([])
