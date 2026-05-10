@@ -2,7 +2,7 @@
   <div>
     <el-card>
       <el-table ref="tableRef" :data="tableData" stripe v-loading="loading" style="width: 100%" @expand-change="handleExpand" @row-click="toggleRow">
-        <el-table-column type="expand" />
+        <el-table-column type="expand">
           <template #default="{ row }">
             <div style="padding: 8px 24px" v-loading="row._loading">
               <el-empty v-if="!row._details || row._details.length === 0" description="暂无面试详情" />
