@@ -32,7 +32,7 @@
           </el-sub-menu>
         </template>
 
-        <template v-if="isTeacher || isStudent">
+        <template v-if="isAdmin || isTeacher || isStudent">
           <el-sub-menu index="/employment">
             <template #title>
               <el-icon><Suitcase /></el-icon>
