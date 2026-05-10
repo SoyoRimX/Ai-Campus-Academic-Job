@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-card>
-      <el-table :data="tableData" stripe v-loading="loading" style="width: 100%" @expand-change="handleExpand">
-        <el-table-column type="expand">
+      <el-table ref="tableRef" :data="tableData" stripe v-loading="loading" style="width: 100%" @expand-change="handleExpand" @row-click="toggleRow">
+        <el-table-column type="expand" />
           <template #default="{ row }">
             <div style="padding: 8px 24px" v-loading="row._loading">
               <el-empty v-if="!row._details || row._details.length === 0" description="暂无面试详情" />
@@ -79,11 +79,24 @@ interface Interview {
   _details?: InterviewDetail[]
 }
 
+const tableRef = ref()
 const loading = ref(false)
 const tableData = ref<Interview[]>([])
+const expandingRow = ref<Interview | null>(null)
 const page = ref(1)
 const size = ref(10)
 const total = ref(0)
+
+function toggleRow(row: Interview) {
+  if (expandingRow.value === row) {
+    tableRef.value?.toggleRowExpansion(row, false)
+    expandingRow.value = null
+  } else {
+    if (expandingRow.value) tableRef.value?.toggleRowExpansion(expandingRow.value, false)
+    tableRef.value?.toggleRowExpansion(row, true)
+    expandingRow.value = row
+  }
+}
 
 async function handleExpand(row: Interview, rows: Interview[]) {
   if (!rows.includes(row)) return
