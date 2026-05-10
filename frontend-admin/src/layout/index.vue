@@ -45,6 +45,11 @@
           </el-sub-menu>
         </template>
 
+        <el-menu-item v-if="isStudent" index="/academic/study-plan">
+          <el-icon><Tickets /></el-icon>
+          <span>学习规划</span>
+        </el-menu-item>
+
         <el-sub-menu v-if="isAdmin" index="/ai">
           <template #title>
             <el-icon><Cpu /></el-icon>

@@ -100,8 +100,8 @@ const router = createRouter({
   routes
 })
 
-const adminPages = ['/system/', '/ai/', '/academic/student', '/academic/warning', '/academic/study-plan', '/employment/job']
-const teacherPages = ['/academic/student', '/academic/warning', '/academic/study-plan', '/employment/job']
+const adminPages = ['/system/', '/ai/', '/academic/student', '/academic/warning', '/employment/job']
+const teacherPages = ['/academic/student', '/academic/warning', '/employment/job']
 
 router.beforeEach((to, _from, next) => {
   const token = localStorage.getItem('token')
