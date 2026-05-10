@@ -20,8 +20,8 @@ export function deleteJob(id: number) {
   return request.delete(`/employ/job/${id}`)
 }
 
-export function getResumes() {
-  return request.get('/employ/resumes')
+export function getResumes(params?: { page: number; size: number }) {
+  return request.get('/employ/resumes', { params })
 }
 
 export function getResume(studentId: number) {

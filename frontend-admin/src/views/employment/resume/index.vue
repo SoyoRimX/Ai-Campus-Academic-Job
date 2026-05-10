@@ -178,8 +178,8 @@ async function handleGenerate() {
 async function fetchData() {
   loading.value = true
   try {
-    const res: any = await getResumes()
-    allData.value = res.data || []
+    const res: any = await getResumes({ page: 1, size: 999 })
+    allData.value = res.data?.records || []
   } catch {
     allData.value = []
   } finally {

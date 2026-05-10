@@ -1,5 +1,8 @@
 package com.soyorim.acaj.module.employment.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.soyorim.acaj.common.PageResult;
 import com.soyorim.acaj.common.Result;
 import com.soyorim.acaj.module.employment.entity.EmployResume;
 import com.soyorim.acaj.module.employment.service.EmployResumeService;
@@ -15,6 +18,17 @@ import java.util.Map;
 public class EmployResumeController {
 
     private final EmployResumeService employResumeService;
+
+    @GetMapping("/resumes")
+    public Result<PageResult<EmployResume>> listAll(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<EmployResume> result = employResumeService.page(
+                new Page<>(page, size),
+                new LambdaQueryWrapper<EmployResume>()
+                        .orderByDesc(EmployResume::getCreateTime));
+        return Result.ok(PageResult.of(result));
+    }
 
     @GetMapping("/resume/{studentId}")
     public Result<EmployResume> getByStudentId(@PathVariable Long studentId) {
