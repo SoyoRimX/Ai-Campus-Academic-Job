@@ -91,17 +91,14 @@ async function handleExpand(row: Interview, rows: Interview[]) {
 
   row._loading = true
   try {
-    // 模拟从API获取详情 —— 实际字段名取决于后端返回结构
-    const raw = (row as any).questions || (row as any).details || (row as any).qaList
-    if (Array.isArray(raw)) {
-      row._details = raw.map((item: any) => ({
-        question: item.question || item.q || '',
-        answer: item.answer || item.a || '',
-        score: item.score
-      }))
-    } else {
-      row._details = []
-    }
+    const qStr = (row as any).questions || ''
+    const aStr = (row as any).answers || ''
+    const questions = qStr.split('||').filter((q: string) => q.trim())
+    const answers = aStr.split('||').filter((a: string) => a.trim())
+    row._details = questions.map((q: string, i: number) => ({
+      question: q,
+      answer: answers[i] || '(未回答)',
+    }))
   } catch {
     row._details = []
   } finally {

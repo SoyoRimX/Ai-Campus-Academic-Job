@@ -1,6 +1,8 @@
 package com.soyorim.acaj.module.employment.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.soyorim.acaj.common.PageResult;
 import com.soyorim.acaj.common.Result;
 import com.soyorim.acaj.module.ai.service.AiService;
 import com.soyorim.acaj.module.employment.entity.EmployInterview;
@@ -84,6 +86,17 @@ public class EmployInterviewController {
         result.put("feedback", feedback);
         result.put("duration", interview.getDuration());
         return Result.ok(result);
+    }
+
+    @GetMapping("/interviews")
+    public Result<PageResult<EmployInterview>> listAll(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<EmployInterview> result = employInterviewService.page(
+                new Page<>(page, size),
+                new LambdaQueryWrapper<EmployInterview>()
+                        .orderByDesc(EmployInterview::getCreateTime));
+        return Result.ok(PageResult.of(result));
     }
 
     @GetMapping("/interviews/{studentId}")
