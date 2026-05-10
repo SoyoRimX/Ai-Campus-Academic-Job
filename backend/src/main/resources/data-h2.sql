@@ -51,6 +51,12 @@ INSERT INTO employ_job (id, job_title, company, salary_range, city, education, e
 (2, '前端开发实习生', '字节跳动', '8k-12k', '北京', '本科', '应届', 'JavaScript,Vue.js,React,CSS', '参与产品前端页面开发，与设计团队协作。', 2, 1, 2),
 (3, 'AI算法工程师', '阿里巴巴', '20k-35k', '杭州', '硕士', '1-3年', 'Python,TensorFlow,PyTorch,NLP', '负责大模型应用开发和算法优化。', 3, 1, 2);
 
+-- 学习规划
+INSERT INTO academic_study_plan (id, student_id, plan_title, semester, plan_detail, status) VALUES
+(1, 1, '2024-2025-2 数据结构强化计划', '2024-2025-2', '1. 每周完成LeetCode 5道算法题\n2. 复习课本重点章节\n3. 参加ACM训练营', 0),
+(2, 1, '2024-2025-2 英语四六级备考', '2024-2025-2', '1. 每天背50个单词\n2. 每周做2套真题\n3. 练习听力30分钟/天', 0),
+(3, 2, '数据结构补考复习计划', '2024-2025-2', '1. 重点复习链表、树、图\n2. 完成课后习题\n3. 每周找老师答疑', 1);
+
 -- 知识库
 INSERT INTO ai_knowledge_base (id, title, content, category, tags, status) VALUES
 (1, '计算机专业培养方案', '计算机科学与技术专业培养方案...', 'course', '培养方案,计算机', 1),
