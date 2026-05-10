@@ -3,10 +3,10 @@
     <!-- 搜索栏 -->
     <el-card class="search-card">
       <el-form :inline="true" :model="searchForm">
-        <el-form-item label="学生姓名">
+        <el-form-item label="学号">
           <el-input
-            v-model="searchForm.studentId"
-            placeholder="请输入学生姓名"
+            v-model="searchForm.keyword"
+            placeholder="请输入学号"
             clearable
             @keyup.enter="handleSearch"
           />
@@ -22,16 +22,17 @@
     <el-card class="table-card">
       <el-table v-loading="loading" :data="tableData" border stripe>
         <el-table-column prop="title" label="预警标题" min-width="180" show-overflow-tooltip />
-        <el-table-column prop="studentId" label="学生ID" width="100" />
-        <el-table-column prop="type" label="预警类型" width="120">
+        <el-table-column prop="studentName" label="学生姓名" width="90" />
+        <el-table-column prop="studentNo" label="学号" width="120" />
+        <el-table-column prop="warningType" label="预警类型" width="120">
           <template #default="{ row }">
-            {{ typeMap[row.type] || '未知' }}
+            {{ typeMap[row.warningType] || '未知' }}
           </template>
         </el-table-column>
-        <el-table-column prop="level" label="预警等级" width="100">
+        <el-table-column prop="warningLevel" label="预警等级" width="100">
           <template #default="{ row }">
-            <el-tag :type="levelColorMap[row.level] || 'info'">
-              {{ levelTextMap[row.level] || '未知' }}
+            <el-tag :type="levelColorMap[row.warningLevel] || 'info'">
+              {{ levelTextMap[row.warningLevel] || '未知' }}
             </el-tag>
           </template>
         </el-table-column>
@@ -141,21 +142,21 @@ const tableData = ref<WarningRecord[]>([])
 const total = ref(0)
 
 const searchForm = reactive({
-  studentId: '',
+  keyword: '',
   page: 1,
   size: 10
 })
 
 function fetchData() {
   loading.value = true
-  const params: { page: number; size: number; studentId?: string } = {
+  const params: any = {
     page: searchForm.page,
     size: searchForm.size
   }
-  if (searchForm.studentId) {
-    params.studentId = searchForm.studentId
+  if (searchForm.keyword) {
+    params.keyword = searchForm.keyword
   }
-  getWarnings(params as any)
+  getWarnings(params)
     .then((res: any) => {
       if (res.data) {
         tableData.value = res.data.records || []
@@ -173,7 +174,7 @@ function handleSearch() {
 }
 
 function handleReset() {
-  searchForm.studentId = ''
+  searchForm.keyword = ''
   searchForm.page = 1
   fetchData()
 }

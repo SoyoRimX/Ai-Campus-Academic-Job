@@ -40,14 +40,24 @@ public class AcademicWarningController {
     }
 
     @GetMapping("/warnings")
-    public Result<PageResult<AcademicWarning>> listWarnings(
+    public Result<Map<String, Object>> listWarnings(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) Long studentId,
+            @RequestParam(required = false) String keyword,
             HttpServletRequest request) {
         LambdaQueryWrapper<AcademicWarning> wrapper = new LambdaQueryWrapper<>();
         String role = getRole(request);
         Long userId = getUserId(request);
+
+        // 按学号搜索：先找学生ID
+        if (keyword != null && !keyword.isBlank()) {
+            List<AcademicStudent> matched = academicStudentMapper.selectList(
+                    new LambdaQueryWrapper<AcademicStudent>().like(AcademicStudent::getStudentNo, keyword));
+            List<Long> ids = matched.stream().map(AcademicStudent::getId).toList();
+            if (!ids.isEmpty()) wrapper.in(AcademicWarning::getStudentId, ids);
+            else wrapper.eq(AcademicWarning::getStudentId, -1L);
+        }
 
         if ("ROLE_STUDENT".equals(role)) {
             AcademicStudent me = academicStudentMapper.selectOne(
@@ -69,7 +79,38 @@ public class AcademicWarningController {
 
         wrapper.orderByDesc(AcademicWarning::getCreateTime);
         IPage<AcademicWarning> iPage = academicWarningService.page(new Page<>(page, size), wrapper);
-        return Result.ok(PageResult.of(iPage));
+
+        List<Map<String, Object>> enriched = iPage.getRecords().stream().map(w -> {
+            Map<String, Object> map = new java.util.LinkedHashMap<>();
+            map.put("id", w.getId());
+            map.put("studentId", w.getStudentId());
+            map.put("warningType", w.getWarningType());
+            map.put("warningLevel", w.getWarningLevel());
+            map.put("title", w.getTitle());
+            map.put("description", w.getDescription());
+            map.put("isRead", w.getIsRead());
+            map.put("isHandled", w.getIsHandled());
+            map.put("handleRemark", w.getHandleRemark());
+            map.put("createTime", w.getCreateTime());
+
+            AcademicStudent stu = academicStudentMapper.selectById(w.getStudentId());
+            if (stu != null) {
+                SysUser u = sysUserMapper.selectById(stu.getUserId());
+                map.put("studentName", u != null ? u.getRealName() : "");
+                map.put("studentNo", stu.getStudentNo());
+            } else {
+                map.put("studentName", "");
+                map.put("studentNo", "");
+            }
+            return map;
+        }).toList();
+
+        Map<String, Object> pageData = new java.util.LinkedHashMap<>();
+        pageData.put("total", iPage.getTotal());
+        pageData.put("page", iPage.getCurrent());
+        pageData.put("size", iPage.getSize());
+        pageData.put("records", enriched);
+        return Result.ok(pageData);
     }
 
     @PutMapping("/warning/{id}/read")

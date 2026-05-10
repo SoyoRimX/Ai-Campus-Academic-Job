@@ -2,7 +2,6 @@ package com.soyorim.acaj.module.academic.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.soyorim.acaj.common.PageResult;
 import com.soyorim.acaj.common.Result;
 import com.soyorim.acaj.config.security.JwtUtil;
 import com.soyorim.acaj.module.academic.entity.AcademicStudent;
@@ -17,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/academic")
@@ -46,7 +46,7 @@ public class AcademicStudyPlanController {
     }
 
     @GetMapping("/study-plans")
-    public Result<PageResult<AcademicStudyPlan>> list(@RequestParam(defaultValue = "1") int page,
+    public Result<Map<String, Object>> list(@RequestParam(defaultValue = "1") int page,
                                                        @RequestParam(defaultValue = "10") int size,
                                                        @RequestParam(required = false) Long studentId,
                                                        HttpServletRequest request) {
@@ -75,8 +75,37 @@ public class AcademicStudyPlanController {
         }
 
         wrapper.orderByDesc(AcademicStudyPlan::getCreateTime);
-        Page<AcademicStudyPlan> result = studyPlanService.page(new Page<>(page, size), wrapper);
-        return Result.ok(PageResult.of(result));
+        Page<AcademicStudyPlan> pageResult = studyPlanService.page(new Page<>(page, size), wrapper);
+
+        List<Map<String, Object>> enriched = pageResult.getRecords().stream().map(p -> {
+            Map<String, Object> map = new java.util.LinkedHashMap<>();
+            map.put("id", p.getId());
+            map.put("studentId", p.getStudentId());
+            map.put("planTitle", p.getPlanTitle());
+            map.put("semester", p.getSemester());
+            map.put("planDetail", p.getPlanDetail());
+            map.put("status", p.getStatus());
+            map.put("createTime", p.getCreateTime());
+            map.put("updateTime", p.getUpdateTime());
+
+            AcademicStudent stu = academicStudentMapper.selectById(p.getStudentId());
+            if (stu != null) {
+                SysUser u = sysUserMapper.selectById(stu.getUserId());
+                map.put("studentName", u != null ? u.getRealName() : "");
+                map.put("studentNo", stu.getStudentNo());
+            } else {
+                map.put("studentName", "");
+                map.put("studentNo", "");
+            }
+            return map;
+        }).toList();
+
+        Map<String, Object> pageData = new java.util.LinkedHashMap<>();
+        pageData.put("total", pageResult.getTotal());
+        pageData.put("page", pageResult.getCurrent());
+        pageData.put("size", pageResult.getSize());
+        pageData.put("records", enriched);
+        return Result.ok(pageData);
     }
 
     @GetMapping("/study-plan/{id}")

@@ -3,7 +3,7 @@
     <el-card>
       <el-row :gutter="16" style="margin-bottom: 16px">
         <el-col :span="6">
-          <el-input v-model="searchStudentId" placeholder="输入学生ID" clearable @keyup.enter="handleSearch" />
+          <el-input v-model="searchStudentNo" placeholder="输入学号" clearable @keyup.enter="handleSearch" />
         </el-col>
         <el-col :span="4">
           <el-button type="primary" @click="handleSearch">搜索</el-button>
@@ -112,14 +112,14 @@ interface Resume {
 
 const loading = ref(false)
 const allData = ref<Resume[]>([])
-const searchStudentId = ref('')
+const searchStudentNo = ref('')
 const page = ref(1)
 const size = ref(10)
 
 const filteredData = computed<Resume[]>(() => {
-  if (!searchStudentId.value) return allData.value
+  if (!searchStudentNo.value) return allData.value
   return allData.value.filter(item =>
-    String(item.studentId).includes(searchStudentId.value)
+    String(item.studentNo).includes(searchStudentNo.value)
   )
 })
 

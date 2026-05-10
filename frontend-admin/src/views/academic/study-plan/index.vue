@@ -10,7 +10,8 @@
       </div>
 
       <el-table :data="tableData" v-loading="loading" stripe>
-        <el-table-column prop="studentId" label="学生ID" width="100" />
+        <el-table-column prop="studentName" label="学生姓名" width="90" />
+        <el-table-column prop="studentNo" label="学号" width="120" />
         <el-table-column prop="planTitle" label="规划标题" min-width="180" />
         <el-table-column prop="semester" label="目标学期" width="140" />
         <el-table-column prop="status" label="状态" width="100">
