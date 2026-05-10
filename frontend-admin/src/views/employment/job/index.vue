@@ -12,13 +12,13 @@
       </el-row>
 
       <el-table :data="tableData" stripe v-loading="loading" style="width: 100%">
-        <el-table-column prop="jobName" label="岗位名称" min-width="120" />
-        <el-table-column prop="companyName" label="公司" min-width="140" />
-        <el-table-column prop="salary" label="薪资" width="120" />
+        <el-table-column prop="jobTitle" label="岗位名称" min-width="120" />
+        <el-table-column prop="company" label="公司" min-width="140" />
+        <el-table-column prop="salaryRange" label="薪资" width="120" />
         <el-table-column prop="city" label="城市" width="90" />
-        <el-table-column prop="type" label="类型" width="80">
+        <el-table-column prop="jobType" label="类型" width="80">
           <template #default="{ row }">
-            <el-tag size="small">{{ typeLabel(row.type) }}</el-tag>
+            <el-tag size="small">{{ typeLabel(row.jobType) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="状态" width="80">
@@ -67,14 +67,14 @@
       @closed="resetForm"
     >
       <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="岗位名称" prop="jobName">
-          <el-input v-model="form.jobName" placeholder="请输入岗位名称" />
+        <el-form-item label="岗位名称" prop="jobTitle">
+          <el-input v-model="form.jobTitle" placeholder="请输入岗位名称" />
         </el-form-item>
-        <el-form-item label="公司名称" prop="companyName">
-          <el-input v-model="form.companyName" placeholder="请输入公司名称" />
+        <el-form-item label="公司名称" prop="company">
+          <el-input v-model="form.company" placeholder="请输入公司名称" />
         </el-form-item>
-        <el-form-item label="薪资范围" prop="salary">
-          <el-input v-model="form.salary" placeholder="如：8K-15K" />
+        <el-form-item label="薪资范围" prop="salaryRange">
+          <el-input v-model="form.salaryRange" placeholder="如：8K-15K" />
         </el-form-item>
         <el-form-item label="城市" prop="city">
           <el-input v-model="form.city" placeholder="请输入城市" />
@@ -85,14 +85,14 @@
         <el-form-item label="经验要求" prop="experience">
           <el-input v-model="form.experience" placeholder="如：1-3年" />
         </el-form-item>
-        <el-form-item label="技能要求" prop="skills">
-          <el-input v-model="form.skills" placeholder="多个技能用逗号分隔" />
+        <el-form-item label="技能要求" prop="requiredSkills">
+          <el-input v-model="form.requiredSkills" placeholder="多个技能用逗号分隔" />
         </el-form-item>
         <el-form-item label="岗位描述" prop="description">
           <el-input v-model="form.description" type="textarea" :autosize="{ minRows: 4, maxRows: 8 }" placeholder="请输入岗位描述" />
         </el-form-item>
-        <el-form-item label="类型" prop="type">
-          <el-select v-model="form.type" placeholder="请选择类型" style="width: 100%">
+        <el-form-item label="类型" prop="jobType">
+          <el-select v-model="form.jobType" placeholder="请选择类型" style="width: 100%">
             <el-option label="全职" :value="1" />
             <el-option label="实习" :value="2" />
             <el-option label="校招" :value="3" />
@@ -115,15 +115,15 @@ import type { FormInstance, FormRules } from 'element-plus'
 
 interface Job {
   id?: number
-  jobName: string
-  companyName: string
-  salary: string
+  jobTitle: string
+  company: string
+  salaryRange: string
   city: string
   education: string
   experience: string
-  skills: string
+  requiredSkills: string
   description: string
-  type: number
+  jobType: number
   status?: number
 }
 
@@ -165,25 +165,25 @@ const submitting = ref(false)
 const formRef = ref<FormInstance>()
 
 const emptyForm: Job = {
-  jobName: '',
-  companyName: '',
-  salary: '',
+  jobTitle: '',
+  company: '',
+  salaryRange: '',
   city: '',
   education: '',
   experience: '',
-  skills: '',
+  requiredSkills: '',
   description: '',
-  type: 1
+  jobType: 1
 }
 
 const form = reactive<Job>({ ...emptyForm })
 
 const rules: FormRules = {
-  jobName: [{ required: true, message: '请输入岗位名称', trigger: 'blur' }],
-  companyName: [{ required: true, message: '请输入公司名称', trigger: 'blur' }],
-  salary: [{ required: true, message: '请输入薪资范围', trigger: 'blur' }],
+  jobTitle: [{ required: true, message: '请输入岗位名称', trigger: 'blur' }],
+  company: [{ required: true, message: '请输入公司名称', trigger: 'blur' }],
+  salaryRange: [{ required: true, message: '请输入薪资范围', trigger: 'blur' }],
   city: [{ required: true, message: '请输入城市', trigger: 'blur' }],
-  type: [{ required: true, message: '请选择类型', trigger: 'change' }]
+  jobType: [{ required: true, message: '请选择类型', trigger: 'change' }]
 }
 
 function openAddDialog() {
