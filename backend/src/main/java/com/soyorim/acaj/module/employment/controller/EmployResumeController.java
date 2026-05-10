@@ -2,7 +2,6 @@ package com.soyorim.acaj.module.employment.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.soyorim.acaj.common.PageResult;
 import com.soyorim.acaj.common.Result;
 import com.soyorim.acaj.config.security.JwtUtil;
 import com.soyorim.acaj.module.academic.entity.AcademicStudent;
@@ -15,7 +14,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map;
 
 @RestController
@@ -39,7 +40,7 @@ public class EmployResumeController {
     }
 
     @GetMapping("/resumes")
-    public Result<PageResult<EmployResume>> listAll(
+    public Result<Map<String, Object>> listAll(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
@@ -64,8 +65,40 @@ public class EmployResumeController {
         }
 
         wrapper.orderByDesc(EmployResume::getCreateTime);
-        Page<EmployResume> result = employResumeService.page(new Page<>(page, size), wrapper);
-        return Result.ok(PageResult.of(result));
+        Page<EmployResume> pageResult = employResumeService.page(new Page<>(page, size), wrapper);
+
+        List<Map<String, Object>> enriched = pageResult.getRecords().stream().map(r -> {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("id", r.getId());
+            map.put("studentId", r.getStudentId());
+            map.put("title", r.getTitle());
+            map.put("content", r.getContent());
+            map.put("targetJob", r.getTargetJob());
+            map.put("targetCity", r.getTargetCity());
+            map.put("aiScore", r.getAiScore());
+            map.put("aiSuggestion", r.getAiSuggestion());
+            map.put("isDefault", r.getIsDefault());
+            map.put("createTime", r.getCreateTime());
+            map.put("updateTime", r.getUpdateTime());
+
+            AcademicStudent stu = academicStudentMapper.selectById(r.getStudentId());
+            if (stu != null) {
+                SysUser user = sysUserMapper.selectById(stu.getUserId());
+                map.put("studentName", user != null ? user.getRealName() : "");
+                map.put("studentNo", stu.getStudentNo());
+            } else {
+                map.put("studentName", "");
+                map.put("studentNo", "");
+            }
+            return map;
+        }).toList();
+
+        Map<String, Object> pageData = new LinkedHashMap<>();
+        pageData.put("total", pageResult.getTotal());
+        pageData.put("page", pageResult.getCurrent());
+        pageData.put("size", pageResult.getSize());
+        pageData.put("records", enriched);
+        return Result.ok(pageData);
     }
 
     @GetMapping("/resume/{studentId}")

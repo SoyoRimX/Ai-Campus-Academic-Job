@@ -3,10 +3,10 @@
     <!-- 搜索栏 -->
     <el-card class="search-card">
       <el-form :inline="true" :model="searchForm">
-        <el-form-item label="学生姓名">
+        <el-form-item label="学号">
           <el-input
             v-model="searchForm.keyword"
-            placeholder="请输入学生姓名"
+            placeholder="请输入学号"
             clearable
             @keyup.enter="handleSearch"
           />
@@ -21,6 +21,7 @@
     <!-- 数据表格 -->
     <el-card class="table-card">
       <el-table v-loading="loading" :data="tableData" border stripe>
+        <el-table-column prop="studentName" label="姓名" width="90" />
         <el-table-column prop="studentNo" label="学号" min-width="120" />
         <el-table-column prop="major" label="专业" min-width="160" />
         <el-table-column prop="grade" label="年级" min-width="100" />
@@ -78,7 +79,7 @@ const searchForm = reactive({
 
 function fetchData() {
   loading.value = true
-  getStudents({ page: searchForm.page, size: searchForm.size })
+  getStudents({ page: searchForm.page, size: searchForm.size, keyword: searchForm.keyword || undefined })
     .then((res: any) => {
       if (res.data) {
         tableData.value = res.data.records || []

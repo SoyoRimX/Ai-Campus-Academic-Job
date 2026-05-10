@@ -13,7 +13,8 @@
 
       <el-table :data="pagedData" stripe v-loading="loading" style="width: 100%">
         <el-table-column prop="title" label="简历标题" min-width="140" />
-        <el-table-column prop="studentId" label="学生ID" width="90" />
+        <el-table-column prop="studentName" label="学生姓名" width="90" />
+        <el-table-column prop="studentNo" label="学号" width="120" />
         <el-table-column prop="targetJob" label="目标岗位" min-width="120" />
         <el-table-column prop="targetCity" label="目标城市" width="100" />
         <el-table-column prop="aiScore" label="AI评分" width="80" />
