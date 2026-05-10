@@ -18,13 +18,13 @@
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="创建时间" width="180" />
-        <el-table-column label="操作" width="180">
+        <el-table-column label="操作" width="240" fixed="right">
           <template #default="{ row }">
-            <el-button size="small" @click="openViewDialog(row)">查看</el-button>
-            <el-button size="small" type="primary" @click="openEditDialog(row)">编辑</el-button>
+            <el-button size="small" link type="primary" @click="openViewDialog(row)">查看</el-button>
+            <el-button size="small" link type="primary" @click="openEditDialog(row)">编辑</el-button>
             <el-popconfirm title="确定删除?" @confirm="handleDelete(row.id)">
               <template #reference>
-                <el-button size="small" type="danger">删除</el-button>
+                <el-button size="small" link type="danger">删除</el-button>
               </template>
             </el-popconfirm>
           </template>
