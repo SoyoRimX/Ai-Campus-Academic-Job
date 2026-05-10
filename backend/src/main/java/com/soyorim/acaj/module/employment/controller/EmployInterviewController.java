@@ -4,9 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.soyorim.acaj.common.PageResult;
 import com.soyorim.acaj.common.Result;
+import com.soyorim.acaj.config.security.JwtUtil;
+import com.soyorim.acaj.module.academic.entity.AcademicStudent;
+import com.soyorim.acaj.module.academic.mapper.AcademicStudentMapper;
 import com.soyorim.acaj.module.ai.service.AiService;
 import com.soyorim.acaj.module.employment.entity.EmployInterview;
 import com.soyorim.acaj.module.employment.service.EmployInterviewService;
+import com.soyorim.acaj.module.system.entity.SysUser;
+import com.soyorim.acaj.module.system.mapper.SysUserMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +26,19 @@ public class EmployInterviewController {
 
     private final EmployInterviewService employInterviewService;
     private final AiService aiService;
+    private final AcademicStudentMapper academicStudentMapper;
+    private final SysUserMapper sysUserMapper;
+    private final JwtUtil jwtUtil;
+
+    private Long getUserId(HttpServletRequest req) {
+        String h = req.getHeader("Authorization");
+        return (h != null && h.startsWith("Bearer ")) ? jwtUtil.getUserId(h.substring(7)) : null;
+    }
+
+    private String getRole(HttpServletRequest req) {
+        String h = req.getHeader("Authorization");
+        return (h != null && h.startsWith("Bearer ")) ? jwtUtil.parseToken(h.substring(7)).get("role", String.class) : null;
+    }
 
     @PostMapping("/interview/start")
     public Result<Map<String, Object>> start(@RequestBody Map<String, Object> body) {
@@ -91,11 +110,30 @@ public class EmployInterviewController {
     @GetMapping("/interviews")
     public Result<PageResult<EmployInterview>> listAll(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Page<EmployInterview> result = employInterviewService.page(
-                new Page<>(page, size),
-                new LambdaQueryWrapper<EmployInterview>()
-                        .orderByDesc(EmployInterview::getCreateTime));
+            @RequestParam(defaultValue = "10") int size,
+            HttpServletRequest request) {
+        LambdaQueryWrapper<EmployInterview> wrapper = new LambdaQueryWrapper<>();
+        String role = getRole(request);
+        Long userId = getUserId(request);
+
+        if ("ROLE_STUDENT".equals(role)) {
+            AcademicStudent me = academicStudentMapper.selectOne(
+                    new LambdaQueryWrapper<AcademicStudent>().eq(AcademicStudent::getUserId, userId));
+            if (me != null) wrapper.eq(EmployInterview::getStudentId, me.getId());
+            else wrapper.eq(EmployInterview::getStudentId, -1L);
+        } else if ("ROLE_TEACHER".equals(role)) {
+            SysUser teacher = sysUserMapper.selectById(userId);
+            if (teacher != null && teacher.getRealName() != null) {
+                List<AcademicStudent> advised = academicStudentMapper.selectList(
+                        new LambdaQueryWrapper<AcademicStudent>().eq(AcademicStudent::getAdvisor, teacher.getRealName()));
+                List<Long> ids = advised.stream().map(AcademicStudent::getId).toList();
+                if (!ids.isEmpty()) wrapper.in(EmployInterview::getStudentId, ids);
+                else wrapper.eq(EmployInterview::getStudentId, -1L);
+            }
+        }
+
+        wrapper.orderByDesc(EmployInterview::getCreateTime);
+        Page<EmployInterview> result = employInterviewService.page(new Page<>(page, size), wrapper);
         return Result.ok(PageResult.of(result));
     }
 

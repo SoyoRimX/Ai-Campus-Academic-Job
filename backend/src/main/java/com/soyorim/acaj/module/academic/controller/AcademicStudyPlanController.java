@@ -7,8 +7,11 @@ import com.soyorim.acaj.common.Result;
 import com.soyorim.acaj.config.security.JwtUtil;
 import com.soyorim.acaj.module.academic.entity.AcademicStudent;
 import com.soyorim.acaj.module.academic.entity.AcademicStudyPlan;
+import com.soyorim.acaj.module.academic.mapper.AcademicStudentMapper;
 import com.soyorim.acaj.module.academic.service.AcademicStudentService;
 import com.soyorim.acaj.module.academic.service.AcademicStudyPlanService;
+import com.soyorim.acaj.module.system.entity.SysUser;
+import com.soyorim.acaj.module.system.mapper.SysUserMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,8 @@ public class AcademicStudyPlanController {
 
     private final AcademicStudyPlanService studyPlanService;
     private final AcademicStudentService studentService;
+    private final AcademicStudentMapper academicStudentMapper;
+    private final SysUserMapper sysUserMapper;
     private final JwtUtil jwtUtil;
 
     private Long getCurrentUserId(HttpServletRequest request) {
@@ -51,16 +56,21 @@ public class AcademicStudyPlanController {
         Long currentUserId = getCurrentUserId(request);
 
         if ("ROLE_STUDENT".equals(role)) {
-            // 学生只能看自己的（userId → academic_student.id）
             AcademicStudent stu = studentService.getOne(
                     new LambdaQueryWrapper<AcademicStudent>().eq(AcademicStudent::getUserId, currentUserId));
-            if (stu != null) {
-                wrapper.eq(AcademicStudyPlan::getStudentId, stu.getId());
-            } else {
-                wrapper.eq(AcademicStudyPlan::getStudentId, -1L); // 无记录
+            if (stu != null) wrapper.eq(AcademicStudyPlan::getStudentId, stu.getId());
+            else wrapper.eq(AcademicStudyPlan::getStudentId, -1L);
+        } else if ("ROLE_TEACHER".equals(role)) {
+            SysUser teacher = sysUserMapper.selectById(currentUserId);
+            if (teacher != null && teacher.getRealName() != null) {
+                List<AcademicStudent> advised = academicStudentMapper.selectList(
+                        new LambdaQueryWrapper<AcademicStudent>().eq(AcademicStudent::getAdvisor, teacher.getRealName()));
+                List<Long> ids = advised.stream().map(AcademicStudent::getId).toList();
+                if (!ids.isEmpty()) wrapper.in(AcademicStudyPlan::getStudentId, ids);
+                else wrapper.eq(AcademicStudyPlan::getStudentId, -1L);
             }
         } else if (studentId != null) {
-            // 教师/管理员可以筛选
+            // 管理员可以筛选
             wrapper.eq(AcademicStudyPlan::getStudentId, studentId);
         }
 
