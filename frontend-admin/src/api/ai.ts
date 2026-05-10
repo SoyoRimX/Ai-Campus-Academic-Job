@@ -15,3 +15,11 @@ export function updateKnowledge(data: any) {
 export function deleteKnowledge(id: number) {
   return request.delete(`/ai/knowledge/${id}`)
 }
+
+export function getConversations(userId: number) {
+  return request.get(`/ai/conversations/${userId}`)
+}
+
+export function getConversation(sessionId: string) {
+  return request.get(`/ai/conversation/${sessionId}`)
+}

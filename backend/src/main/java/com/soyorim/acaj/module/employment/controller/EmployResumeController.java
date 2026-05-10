@@ -115,9 +115,20 @@ public class EmployResumeController {
 
     @PostMapping("/resume/generate")
     public Result<String> generate(@RequestBody Map<String, Object> body) {
+        String studentNo = body.get("studentNo") != null ? body.get("studentNo").toString() : "";
+        AcademicStudent student = academicStudentMapper.selectOne(
+                new LambdaQueryWrapper<AcademicStudent>().eq(AcademicStudent::getStudentNo, studentNo));
+        if (student == null) {
+            return Result.fail("学号不存在");
+        }
+        SysUser user = sysUserMapper.selectById(student.getUserId());
+        String name = user != null ? user.getRealName() : "";
+        String major = student.getMajor() != null ? student.getMajor() : "计算机相关";
+        String grade = student.getGrade() != null ? student.getGrade() : "";
+
         String generated = "{\n" +
-                "  \"title\": \"软件工程专业应届生简历\",\n" +
-                "  \"content\": \"姓名：张三\\n学校：XX大学\\n专业：软件工程\\n技能：Java, Spring Boot, Vue.js, MySQL\\n项目经验：校园二手交易平台（Spring Boot + Vue），在线考试系统\\n证书：CET-6，计算机二级\",\n" +
+                "  \"title\": \"" + major + "应届生简历\",\n" +
+                "  \"content\": \"姓名：" + name + "\\n学号：" + studentNo + "\\n年级：" + grade + "\\n专业：" + major + "\\n技能：Java, Spring Boot, Vue.js, MySQL\\n项目经验：校园二手交易平台（Spring Boot + Vue），在线考试系统\\n证书：CET-6，计算机二级\",\n" +
                 "  \"targetJob\": \"Java开发工程师\",\n" +
                 "  \"targetCity\": \"北京\",\n" +
                 "  \"aiScore\": 85,\n" +

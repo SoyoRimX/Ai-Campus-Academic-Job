@@ -17,7 +17,7 @@
 ### 就业服务
 | 功能 | 说明 |
 |------|------|
-| AI 简历生成与优化 | 根据学生信息 AI 生成专业简历，评分与优化建议 |
+| AI 简历生成与优化 | 输入学号，AI 自动获取学生信息生成专业简历，评分与优化建议 |
 | 智能职位匹配 | 简历与岗位多维度匹配打分，输出匹配理由 |
 | AI 模拟面试 | 文字/语音双模式，AI 提问 → 作答 → 评分反馈 + 问答回顾 |
 | 面试记录管理 | 查看历史面试记录，展开查看详细问答 |
@@ -168,13 +168,16 @@ docker-compose up -d
 |------|------|------|
 | GET | /api/employ/resumes | 简历列表（分页） |
 | GET | /api/employ/resume/{studentId} | 查询简历 |
-| POST | /api/employ/resume/generate | AI 生成简历 |
+| POST | /api/employ/resume | 保存/更新简历 |
+| POST | /api/employ/resume/generate | AI 生成简历（传入学号） |
 | GET | /api/employ/jobs | 岗位列表（分页，关键字搜索） |
 | POST/PUT/DELETE | /api/employ/job | 岗位 CRUD |
 | POST | /api/employ/match | 人岗匹配 |
-| POST | /api/employ/interview/start | 开始模拟面试 |
-| POST | /api/employ/interview/submit | 提交面试答案 |
+| GET | /api/employ/matches/{resumeId} | 匹配结果列表 |
+| POST | /api/employ/interview/start | 开始模拟面试（AI 出题） |
+| POST | /api/employ/interview/submit | 提交面试答案（AI 评分） |
 | GET | /api/employ/interviews | 面试列表（含岗位名称/公司/学生姓名） |
+| GET | /api/employ/interviews/{studentId} | 某学生的面试记录 |
 
 ### AI 智能体
 | 方法 | 路径 | 说明 |

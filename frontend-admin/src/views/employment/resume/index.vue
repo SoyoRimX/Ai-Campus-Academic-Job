@@ -79,10 +79,10 @@
     </el-dialog>
 
     <!-- AI生成简历弹窗 -->
-    <el-dialog v-model="generateDialogVisible" title="AI生成简历" width="450px" @closed="generateStudentId = ''">
+    <el-dialog v-model="generateDialogVisible" title="AI生成简历" width="450px" @closed="generateStudentNo = ''">
       <el-form label-width="100px">
-        <el-form-item label="学生ID" required>
-          <el-input v-model="generateStudentId" placeholder="请输入学生ID" />
+        <el-form-item label="学号" required>
+          <el-input v-model="generateStudentNo" placeholder="请输入学号" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -150,22 +150,22 @@ const parsedContent = computed(() => {
 })
 
 const generateDialogVisible = ref(false)
-const generateStudentId = ref('')
+const generateStudentNo = ref('')
 const generating = ref(false)
 
 function openGenerateDialog() {
-  generateStudentId.value = ''
+  generateStudentNo.value = ''
   generateDialogVisible.value = true
 }
 
 async function handleGenerate() {
-  if (!generateStudentId.value) {
-    ElMessage.warning('请输入学生ID')
+  if (!generateStudentNo.value) {
+    ElMessage.warning('请输入学号')
     return
   }
   generating.value = true
   try {
-    await generateResume(Number(generateStudentId.value))
+    await generateResume(generateStudentNo.value)
     ElMessage.success('简历生成成功')
     generateDialogVisible.value = false
     fetchData()
