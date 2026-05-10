@@ -3,7 +3,7 @@
     <el-card>
       <div class="toolbar">
         <el-select v-if="!isStudent" v-model="searchForm.studentId" placeholder="筛选学生" clearable style="width:200px" @change="fetchData">
-          <el-option v-for="s in studentOptions" :key="s.id" :label="s.studentNo + ' ' + s.major" :value="s.id" />
+          <el-option v-for="s in studentOptions" :key="s.id" :label="s.studentNo + ' ' + s.studentName" :value="s.id" />
         </el-select>
         <span v-else></span>
         <el-button type="primary" @click="openAddDialog">添加规划</el-button>
@@ -47,8 +47,10 @@
     <!-- 添加/编辑对话框 -->
     <el-dialog :title="editId ? '编辑规划' : '添加规划'" v-model="dialogVisible" width="600px">
       <el-form :model="form" label-width="100px">
-        <el-form-item label="学生ID" required>
-          <el-input-number v-model="form.studentId" :min="1" style="width:100%" />
+        <el-form-item v-if="!isStudent" label="学生" required>
+          <el-select v-model="form.studentId" placeholder="选择学生" filterable style="width:100%">
+            <el-option v-for="s in studentOptions" :key="s.id" :label="s.studentNo + ' ' + s.studentName" :value="s.id" />
+          </el-select>
         </el-form-item>
         <el-form-item label="规划标题" required>
           <el-input v-model="form.planTitle" />
