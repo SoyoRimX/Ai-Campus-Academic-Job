@@ -92,6 +92,10 @@ coverage/
 .jacoco/
 
 # --- 临时文件 ---
+# H2 本地数据库文件
+*.mv.db
+*.trace.db
+
 *.tmp
 *.temp
 *.swp

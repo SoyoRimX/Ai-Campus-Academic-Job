@@ -41,7 +41,7 @@
 | 前端管理后台 | Vue 3.4 + Vite 5 + Element Plus 2.x + Pinia + ECharts 5 |
 | 微信小程序 | 原生小程序框架 + WebSocket |
 | AI 能力 | 金蝶苍穹 AI 平台（LLM 大模型 + RAG 检索增强 + 提示词工程） |
-| 数据层 | MySQL 8.0（生产）/ H2（开发）+ Redis + Elasticsearch |
+| 数据层 | MySQL 8.0（生产）/ H2（开发，文件持久化）+ Redis（可选） |
 | 部署 | Docker Compose + Nginx + GitHub Actions CI/CD |
 
 ---
@@ -49,7 +49,7 @@
 ## 项目结构
 
 ```
-├── backend/                               # Spring Boot 后端
+├── backend/                               # Spring Boot 后端（74 个 Java 文件）
 │   └── src/main/java/com/soyorim/acaj/
 │       ├── common/                        # 统一响应、分页、异常处理
 │       ├── config/                        # Security、JWT、MyBatis、WebSocket、MetaHandler
@@ -58,7 +58,7 @@
 │           ├── academic/                  # 学生画像、课程、成绩、预警、学习规划
 │           ├── employment/                # 简历、岗位、人岗匹配、模拟面试
 │           └── ai/                        # AI 对话、知识库、AI 服务层
-├── frontend-admin/                        # Vue 3 管理后台（14 个页面）
+├── frontend-admin/                        # Vue 3 管理后台（13 个页面）
 │   └── src/
 │       ├── api/                           # API 封装（auth/academic/employment/ai/system）
 │       ├── router/                        # 路由 + 角色守卫
@@ -88,23 +88,27 @@
 ## 快速开始
 
 ### 环境要求
-| 软件 | 版本 |
-|------|------|
-| JDK | 17+ |
-| Node.js | 18+ |
-| MySQL | 8.0+（开发环境可选，内置 H2） |
-| Redis | 6.0+（开发环境可选） |
+| 软件 | 版本 | 说明 |
+|------|------|------|
+| JDK | 17+ | 21 测试通过 |
+| Node.js | 18+ | 24 测试通过 |
+| Maven | 3.9+ | 或使用项目内置的 mvnw 包装器 |
+| MySQL | 8.0+ | 生产环境需要 |
+| Redis | 6.0+ | 生产环境需要，开发环境自动排除 |
 
 ### 后端启动
 ```bash
 cd backend
-mvn package -DskipTests
-java -jar target/acaj-1.0.0-SNAPSHOT.jar --spring.profiles.active=dev
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+# 或使用系统 Maven：
+# mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-开发环境内置 H2 内存数据库 + 完整种子数据，无需 MySQL/Redis。启动后：
-- API 文档：http://localhost:8080/doc.html
-- H2 控制台：http://localhost:8080/h2-console（JDBC URL: `jdbc:h2:mem:acaj`）
+开发环境使用 H2 文件数据库（`backend/data/acaj.mv.db`），无需安装 MySQL/Redis。数据库文件持久化，重启不丢失数据，首次启动自动导入种子数据。
+
+启动后：
+- API 文档（Knife4j）：http://localhost:8080/doc.html
+- H2 控制台：http://localhost:8080/h2-console（JDBC URL: `jdbc:h2:file:./data/acaj`，用户名 `sa`，无密码）
 
 ### 管理后台启动
 ```bash
@@ -113,7 +117,7 @@ npm install
 npm run dev
 ```
 
-访问 http://localhost:3000
+访问 http://localhost:3000（Vite 代理 `/api` 到 `localhost:8080`）
 
 ### 微信小程序
 使用微信开发者工具打开 `frontend-miniapp` 目录，配置 AppID。
@@ -170,7 +174,7 @@ docker-compose up -d
 | POST | /api/employ/match | 人岗匹配 |
 | POST | /api/employ/interview/start | 开始模拟面试 |
 | POST | /api/employ/interview/submit | 提交面试答案 |
-| GET | /api/employ/interviews | 面试列表（含岗位名称/学生姓名） |
+| GET | /api/employ/interviews | 面试列表（含岗位名称/公司/学生姓名） |
 
 ### AI 智能体
 | 方法 | 路径 | 说明 |
