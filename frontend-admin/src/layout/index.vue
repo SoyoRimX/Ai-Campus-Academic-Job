@@ -77,7 +77,7 @@
         <div class="header-right">
           <el-dropdown @command="handleCommand">
             <span class="user-info">
-              {{ userStore.userInfo?.realName || userStore.userInfo?.username || '管理员' }}
+              {{ userStore.userInfo?.realName || userStore.userInfo?.username || '用户' }}
               <el-icon><ArrowDown /></el-icon>
             </span>
             <template #dropdown>

@@ -5,7 +5,8 @@ import router from '@/router'
 
 export const useUserStore = defineStore('user', () => {
   const token = ref(localStorage.getItem('token') || '')
-  const userInfo = ref<any>(null)
+  const savedInfo = localStorage.getItem('userInfo')
+  const userInfo = ref<any>(savedInfo ? JSON.parse(savedInfo) : null)
 
   async function login(username: string, password: string) {
     const res = await loginApi({ username, password })
