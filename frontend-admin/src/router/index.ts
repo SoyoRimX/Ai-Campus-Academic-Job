@@ -100,11 +100,43 @@ const router = createRouter({
   routes
 })
 
+const adminPages = ['/system/', '/ai/', '/academic/student', '/academic/warning', '/academic/study-plan', '/employment/job']
+const teacherPages = ['/academic/student', '/academic/warning', '/academic/study-plan', '/employment/job']
+
 router.beforeEach((to, _from, next) => {
   const token = localStorage.getItem('token')
   if (to.path !== '/login' && !token) {
     next('/login')
-  } else {
+    return
+  }
+
+  // 从 localStorage 读取用户类型
+  try {
+    const raw = localStorage.getItem('userInfo')
+    const userType: number = raw ? JSON.parse(raw).userType : 0
+    const path = to.path
+
+    // 管理员可访问所有页面
+    if (userType === 2) { next(); return }
+
+    // 学生只能访问就业相关和自己相关
+    if (userType === 0) {
+      if (adminPages.some(p => path.startsWith(p)) || teacherPages.some(p => path.startsWith(p))) {
+        next('/dashboard')
+        return
+      }
+    }
+
+    // 教师不能访问系统管理
+    if (userType === 1) {
+      if (path.startsWith('/system/')) {
+        next('/dashboard')
+        return
+      }
+    }
+
+    next()
+  } catch {
     next()
   }
 })

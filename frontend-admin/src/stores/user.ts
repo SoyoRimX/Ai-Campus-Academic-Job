@@ -12,18 +12,21 @@ export const useUserStore = defineStore('user', () => {
     token.value = res.data.token
     userInfo.value = res.data
     localStorage.setItem('token', res.data.token)
+    localStorage.setItem('userInfo', JSON.stringify(res.data))
     return res
   }
 
   async function fetchUserInfo() {
     const res = await getUserInfo()
     userInfo.value = res.data
+    localStorage.setItem('userInfo', JSON.stringify(res.data))
   }
 
   function logout() {
     token.value = ''
     userInfo.value = null
     localStorage.removeItem('token')
+    localStorage.removeItem('userInfo')
     router.push('/login')
   }
 

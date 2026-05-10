@@ -20,28 +20,32 @@
           <span>校方大屏</span>
         </el-menu-item>
 
-        <el-sub-menu index="/academic">
-          <template #title>
-            <el-icon><Reading /></el-icon>
-            <span>学业管理</span>
-          </template>
-          <el-menu-item index="/academic/student">学生管理</el-menu-item>
-          <el-menu-item index="/academic/warning">学业预警</el-menu-item>
-          <el-menu-item index="/academic/study-plan">学习规划</el-menu-item>
-        </el-sub-menu>
+        <template v-if="isAdmin || isTeacher">
+          <el-sub-menu index="/academic">
+            <template #title>
+              <el-icon><Reading /></el-icon>
+              <span>学业管理</span>
+            </template>
+            <el-menu-item index="/academic/student">学生管理</el-menu-item>
+            <el-menu-item index="/academic/warning">学业预警</el-menu-item>
+            <el-menu-item index="/academic/study-plan">学习规划</el-menu-item>
+          </el-sub-menu>
+        </template>
 
-        <el-sub-menu index="/employment">
-          <template #title>
-            <el-icon><Suitcase /></el-icon>
-            <span>就业服务</span>
-          </template>
-          <el-menu-item index="/employment/resume">简历管理</el-menu-item>
-          <el-menu-item index="/employment/job">岗位管理</el-menu-item>
-          <el-menu-item index="/employment/interview-simulator">AI 模拟面试</el-menu-item>
-          <el-menu-item index="/employment/interview">面试记录</el-menu-item>
-        </el-sub-menu>
+        <template v-if="isTeacher || isStudent">
+          <el-sub-menu index="/employment">
+            <template #title>
+              <el-icon><Suitcase /></el-icon>
+              <span>就业服务</span>
+            </template>
+            <el-menu-item index="/employment/resume">简历管理</el-menu-item>
+            <el-menu-item v-if="isAdmin || isTeacher" index="/employment/job">岗位管理</el-menu-item>
+            <el-menu-item index="/employment/interview-simulator">AI 模拟面试</el-menu-item>
+            <el-menu-item index="/employment/interview">面试记录</el-menu-item>
+          </el-sub-menu>
+        </template>
 
-        <el-sub-menu index="/ai">
+        <el-sub-menu v-if="isAdmin" index="/ai">
           <template #title>
             <el-icon><Cpu /></el-icon>
             <span>AI 智能体</span>
@@ -49,7 +53,7 @@
           <el-menu-item index="/ai/knowledge">知识库</el-menu-item>
         </el-sub-menu>
 
-        <el-sub-menu index="/system">
+        <el-sub-menu v-if="isAdmin" index="/system">
           <template #title>
             <el-icon><Setting /></el-icon>
             <span>系统管理</span>
@@ -101,6 +105,10 @@ const route = useRoute()
 const userStore = useUserStore()
 
 const activeMenu = computed(() => route.path)
+const userType = computed(() => userStore.userInfo?.userType ?? 0)
+const isAdmin = computed(() => userType.value === 2)
+const isTeacher = computed(() => userType.value === 1)
+const isStudent = computed(() => userType.value === 0)
 
 function handleCommand(cmd: string) {
   if (cmd === 'logout') {
@@ -110,35 +118,10 @@ function handleCommand(cmd: string) {
 </script>
 
 <style scoped>
-.layout-container {
-  height: 100vh;
-}
-.aside {
-  background-color: #304156;
-  overflow-y: auto;
-}
-.logo {
-  height: 60px;
-  line-height: 60px;
-  text-align: center;
-  color: #fff;
-  font-size: 16px;
-  font-weight: bold;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-.header {
-  background: #fff;
-  border-bottom: 1px solid #e6e6e6;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-}
-.header-right {
-  cursor: pointer;
-}
-.main {
-  background: #f0f2f5;
-  padding: 20px;
-}
+.layout-container { height: 100vh; }
+.aside { background-color: #304156; overflow-y: auto; }
+.logo { height: 60px; line-height: 60px; text-align: center; color: #fff; font-size: 16px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.header { background: #fff; border-bottom: 1px solid #e6e6e6; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+.header-right { cursor: pointer; }
+.main { background: #f0f2f5; padding: 20px; }
 </style>
