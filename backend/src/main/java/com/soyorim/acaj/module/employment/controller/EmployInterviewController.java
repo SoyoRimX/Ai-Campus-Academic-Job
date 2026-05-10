@@ -5,10 +5,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.soyorim.acaj.common.PageResult;
 import com.soyorim.acaj.common.Result;
 import com.soyorim.acaj.config.security.JwtUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.soyorim.acaj.common.PageResult;
+import com.soyorim.acaj.common.Result;
+import com.soyorim.acaj.config.security.JwtUtil;
 import com.soyorim.acaj.module.academic.entity.AcademicStudent;
 import com.soyorim.acaj.module.academic.mapper.AcademicStudentMapper;
 import com.soyorim.acaj.module.ai.service.AiService;
 import com.soyorim.acaj.module.employment.entity.EmployInterview;
+import com.soyorim.acaj.module.employment.entity.EmployJob;
+import com.soyorim.acaj.module.employment.mapper.EmployJobMapper;
 import com.soyorim.acaj.module.employment.service.EmployInterviewService;
 import com.soyorim.acaj.module.system.entity.SysUser;
 import com.soyorim.acaj.module.system.mapper.SysUserMapper;
@@ -27,6 +34,7 @@ public class EmployInterviewController {
     private final EmployInterviewService employInterviewService;
     private final AiService aiService;
     private final AcademicStudentMapper academicStudentMapper;
+    private final EmployJobMapper employJobMapper;
     private final SysUserMapper sysUserMapper;
     private final JwtUtil jwtUtil;
 
@@ -107,8 +115,9 @@ public class EmployInterviewController {
         return Result.ok(result);
     }
 
+    @SuppressWarnings("unchecked")
     @GetMapping("/interviews")
-    public Result<PageResult<EmployInterview>> listAll(
+    public Result<Map<String, Object>> listAll(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request) {
@@ -133,8 +142,54 @@ public class EmployInterviewController {
         }
 
         wrapper.orderByDesc(EmployInterview::getCreateTime);
-        Page<EmployInterview> result = employInterviewService.page(new Page<>(page, size), wrapper);
-        return Result.ok(PageResult.of(result));
+        Page<EmployInterview> pageResult = employInterviewService.page(new Page<>(page, size), wrapper);
+
+        // 富化：添加岗位名称和学生姓名
+        List<Map<String, Object>> enriched = pageResult.getRecords().stream().map(iv -> {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("id", iv.getId());
+            map.put("studentId", iv.getStudentId());
+            map.put("jobId", iv.getJobId());
+            map.put("interviewType", iv.getInterviewType());
+            map.put("questions", iv.getQuestions());
+            map.put("answers", iv.getAnswers());
+            map.put("score", iv.getScore());
+            map.put("feedback", iv.getFeedback());
+            map.put("duration", iv.getDuration());
+            map.put("startTime", iv.getStartTime());
+            map.put("endTime", iv.getEndTime());
+            map.put("createTime", iv.getCreateTime());
+
+            // 查岗位名称
+            if (iv.getJobId() != null) {
+                EmployJob job = employJobMapper.selectById(iv.getJobId());
+                map.put("jobTitle", job != null ? job.getJobTitle() : "");
+                map.put("company", job != null ? job.getCompany() : "");
+            } else {
+                map.put("jobTitle", "");
+                map.put("company", "");
+            }
+
+            // 查学生姓名
+            AcademicStudent stu = academicStudentMapper.selectById(iv.getStudentId());
+            if (stu != null) {
+                SysUser user = sysUserMapper.selectById(stu.getUserId());
+                map.put("studentName", user != null ? user.getRealName() : stu.getStudentNo());
+                map.put("studentNo", stu.getStudentNo());
+            } else {
+                map.put("studentName", "");
+                map.put("studentNo", "");
+            }
+
+            return map;
+        }).toList();
+
+        Map<String, Object> pageData = new LinkedHashMap<>();
+        pageData.put("total", pageResult.getTotal());
+        pageData.put("page", pageResult.getCurrent());
+        pageData.put("size", pageResult.getSize());
+        pageData.put("records", enriched);
+        return Result.ok(pageData);
     }
 
     @GetMapping("/interviews/{studentId}")

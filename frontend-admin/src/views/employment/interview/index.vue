@@ -26,8 +26,10 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="studentId" label="学生ID" width="90" />
-        <el-table-column prop="jobId" label="岗位ID" width="90" />
+        <el-table-column prop="studentName" label="学生姓名" width="90" />
+        <el-table-column prop="studentNo" label="学号" width="120" />
+        <el-table-column prop="jobTitle" label="岗位名称" min-width="150" />
+        <el-table-column prop="company" label="公司" min-width="120" />
         <el-table-column label="面试类型" width="100">
           <template #default="{ row }">
             <el-tag :type="row.interviewType === 1 ? 'primary' : 'warning'" size="small">
