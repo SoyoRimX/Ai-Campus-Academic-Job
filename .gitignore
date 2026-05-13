@@ -46,6 +46,9 @@ lerna-debug.log*
 .env.local
 .env.*.local
 
+# Claude Code
+.claude/
+
 # 微信小程序 (可能包含个人AppID等敏感信息)
 project.private.config.json
 

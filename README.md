@@ -90,7 +90,7 @@
 ### 环境要求
 | 软件 | 版本 | 说明 |
 |------|------|------|
-| JDK | 17+ | 21 测试通过 |
+| JDK | 21+ | 21 测试通过 |
 | Node.js | 18+ | 24 测试通过 |
 | Maven | 3.9+ | 或使用项目内置的 mvnw 包装器 |
 | MySQL | 8.0+ | 生产环境需要 |
@@ -120,7 +120,18 @@ npm run dev
 访问 http://localhost:3000（Vite 代理 `/api` 到 `localhost:8080`）
 
 ### 微信小程序
-使用微信开发者工具打开 `frontend-miniapp` 目录，配置 AppID。
+
+1. 复制环境变量模板并填写配置：
+   ```bash
+   cd frontend-miniapp
+   cp .env.example .env
+   # 编辑 .env，填入 WechatSI 插件 ID（腾讯官方值已预填）
+   ```
+2. 注入配置到 app.json：
+   ```bash
+   node scripts/inject-config.js
+   ```
+3. 使用微信开发者工具打开 `frontend-miniapp` 目录，配置 AppID。
 
 ### Docker 部署
 ```bash

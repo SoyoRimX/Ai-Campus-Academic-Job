@@ -40,7 +40,7 @@
 
 | 组件 | 选型 | 理由 |
 |------|------|------|
-| 后端框架 | Spring Boot 3.2 | 成熟稳定，生态完善，JDK17+虚拟线程 |
+| 后端框架 | Spring Boot 3.2 | 成熟稳定，生态完善，JDK21+虚拟线程 |
 | ORM | MyBatis Plus 3.5 | 简化CRUD，Lambda查询，分页插件 |
 | 认证 | Spring Security + JWT | 无状态认证，适合前后端分离 |
 | 实时通信 | WebSocket | 学业预警实时推送 |
