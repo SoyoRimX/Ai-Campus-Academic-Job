@@ -11,19 +11,19 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/employment/resume',
     children: [
       {
         path: 'dashboard',
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index.vue'),
-        meta: { title: '仪表盘', icon: 'DataAnalysis' }
+        meta: { title: '仪表盘', icon: 'DataAnalysis', hidden: true }
       },
       {
         path: 'big-screen',
         name: 'BigScreen',
         component: () => import('@/views/dashboard/big-screen.vue'),
-        meta: { title: '校方大屏', icon: 'Monitor' }
+        meta: { title: '校方大屏', icon: 'Monitor', hidden: true }
       },
       {
         path: 'academic/student',
@@ -116,13 +116,19 @@ router.beforeEach((to, _from, next) => {
     const userType: number = raw ? JSON.parse(raw).userType : 0
     const path = to.path
 
+    // 所有角色都不能访问仪表盘和校方大屏
+    if (path === '/dashboard' || path === '/big-screen' || path === '/') {
+      next('/employment/resume')
+      return
+    }
+
     // 管理员可访问所有页面
     if (userType === 2) { next(); return }
 
     // 学生只能访问就业相关和自己相关
     if (userType === 0) {
       if (adminPages.some(p => path.startsWith(p)) || teacherPages.some(p => path.startsWith(p))) {
-        next('/dashboard')
+        next('/employment/resume')
         return
       }
     }
@@ -130,7 +136,7 @@ router.beforeEach((to, _from, next) => {
     // 教师不能访问系统管理
     if (userType === 1) {
       if (path.startsWith('/system/')) {
-        next('/dashboard')
+        next('/employment/resume')
         return
       }
     }

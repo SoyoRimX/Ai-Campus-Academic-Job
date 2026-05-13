@@ -11,14 +11,7 @@
         text-color="#bfcbd9"
         active-text-color="#409EFF"
       >
-        <el-menu-item index="/dashboard">
-          <el-icon><DataAnalysis /></el-icon>
-          <span>仪表盘</span>
-        </el-menu-item>
-        <el-menu-item index="/big-screen">
-          <el-icon><Monitor /></el-icon>
-          <span>校方大屏</span>
-        </el-menu-item>
+        <!-- 仪表盘和校方大屏对所有角色隐藏 -->
 
         <template v-if="isAdmin || isTeacher">
           <el-sub-menu index="/academic">
@@ -40,7 +33,7 @@
             </template>
             <el-menu-item index="/employment/resume">简历管理</el-menu-item>
             <el-menu-item v-if="isAdmin || isTeacher" index="/employment/job">岗位管理</el-menu-item>
-            <el-menu-item index="/employment/interview-simulator">AI 模拟面试</el-menu-item>
+            <el-menu-item v-if="isStudent" index="/employment/interview-simulator">AI 模拟面试</el-menu-item>
             <el-menu-item index="/employment/interview">面试记录</el-menu-item>
           </el-sub-menu>
         </template>
