@@ -11,7 +11,10 @@
         text-color="#bfcbd9"
         active-text-color="#409EFF"
       >
-        <!-- 仪表盘和校方大屏对所有角色隐藏 -->
+        <el-menu-item index="/big-screen">
+          <el-icon><Monitor /></el-icon>
+          <span>校方大屏</span>
+        </el-menu-item>
 
         <template v-if="isAdmin || isTeacher">
           <el-sub-menu index="/academic">
