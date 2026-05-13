@@ -54,5 +54,40 @@ App({
         }
       })
     })
+  },
+
+  uploadFile(url, filePath, formData = {}) {
+    return new Promise((resolve, reject) => {
+      wx.uploadFile({
+        url: this.globalData.baseUrl + url,
+        filePath,
+        name: 'file',
+        formData,
+        header: {
+          'Authorization': `Bearer ${this.globalData.token}`
+        },
+        success: (res) => {
+          try {
+            const data = JSON.parse(res.data)
+            if (data.code === 200) {
+              resolve(data)
+            } else if (data.code === 401) {
+              wx.removeStorageSync('token')
+              wx.redirectTo({ url: '/pages/index/index' })
+              reject(data)
+            } else {
+              wx.showToast({ title: data.message || '上传失败', icon: 'none' })
+              reject(data)
+            }
+          } catch (e) {
+            reject(new Error('解析响应失败'))
+          }
+        },
+        fail: (err) => {
+          wx.showToast({ title: '网络错误', icon: 'none' })
+          reject(err)
+        }
+      })
+    })
   }
 })

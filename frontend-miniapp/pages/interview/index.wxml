@@ -69,7 +69,14 @@
 
     <!-- 语音模式输入栏 -->
     <view class="input-bar" wx:if="{{interviewType === 'voice'}}">
-      <button class="voice-btn" bindtouchstart="onVoiceStart" bindtouchend="onVoiceEnd">按住说话</button>
+      <view class="voice-area">
+        <button
+          class="voice-btn {{isRecording ? 'recording' : ''}}"
+          bindtouchstart="onVoiceStart"
+          bindtouchend="onVoiceEnd"
+          bindtouchcancel="onVoiceEnd"
+        >{{isRecording ? '正在录音 ' + recordingTime + 's' : '按住说话'}}</button>
+      </view>
     </view>
   </view>
 

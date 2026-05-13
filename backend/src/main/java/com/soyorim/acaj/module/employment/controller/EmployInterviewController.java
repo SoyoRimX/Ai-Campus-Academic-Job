@@ -87,13 +87,8 @@ public class EmployInterviewController {
         interview.setAnswers(answers);
         interview.setEndTime(LocalDateTime.now());
 
-        // AI 评估面试
-        List<Map<String, String>> qaList = new ArrayList<>();
-        String[] qs = interview.getQuestions() != null ? interview.getQuestions().split("\\|\\|") : new String[0];
-        String[] as = answers.split("\\|\\|");
-        for (int i = 0; i < Math.min(qs.length, as.length); i++) {
-            qaList.add(Map.of("question", qs[i], "answer", as[i]));
-        }
+        // AI 评估面试 - 解析问答列表
+        List<Map<String, String>> qaList = parseQAList(interview.getQuestions(), answers);
         Map<String, Object> evaluation = aiService.evaluateInterview(qaList);
         int score = evaluation.get("score") != null ? ((Number) evaluation.get("score")).intValue() : 80;
         String feedback = evaluation.get("feedback") != null ? evaluation.get("feedback").toString() : "面试完成";
@@ -199,5 +194,39 @@ public class EmployInterviewController {
                         .eq(EmployInterview::getStudentId, studentId)
                         .orderByDesc(EmployInterview::getCreateTime));
         return Result.ok(interviews);
+    }
+
+    /**
+     * Parse Q&A list from stored questions (||-separated) and answers (JSON array or ||-separated).
+     */
+    private List<Map<String, String>> parseQAList(String questionsStr, String answersStr) {
+        List<Map<String, String>> qaList = new ArrayList<>();
+        if (questionsStr == null || answersStr == null) return qaList;
+
+        String[] qs = questionsStr.split("\\|\\|");
+
+        // Try JSON array format (from mini-program): [{"question":"...", "answer":"..."}, ...]
+        String trimmed = answersStr.trim();
+        if (trimmed.startsWith("[")) {
+            try {
+                cn.hutool.json.JSONArray arr = cn.hutool.json.JSONUtil.parseArray(trimmed);
+                for (int i = 0; i < arr.size(); i++) {
+                    cn.hutool.json.JSONObject obj = arr.getJSONObject(i);
+                    String q = obj.getStr("question", qs.length > i ? qs[i] : "");
+                    String a = obj.getStr("answer", "");
+                    qaList.add(Map.of("question", q, "answer", a));
+                }
+                return qaList;
+            } catch (Exception e) {
+                // Fall through to pipe-split
+            }
+        }
+
+        // Pipe-separated format
+        String[] as = answersStr.split("\\|\\|");
+        for (int i = 0; i < Math.min(qs.length, as.length); i++) {
+            qaList.add(Map.of("question", qs[i], "answer", as[i]));
+        }
+        return qaList;
     }
 }

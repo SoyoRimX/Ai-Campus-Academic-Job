@@ -33,7 +33,7 @@
         <el-table-column label="面试类型" width="100">
           <template #default="{ row }">
             <el-tag :type="row.interviewType === 1 ? 'primary' : 'warning'" size="small">
-              {{ row.interviewType === 1 ? '文字' : row.interviewType === 2 ? '语音' : '未知' }}
+              {{ row.interviewType === 0 ? '文字' : row.interviewType === 1 ? '语音' : '未知' }}
             </el-tag>
           </template>
         </el-table-column>
