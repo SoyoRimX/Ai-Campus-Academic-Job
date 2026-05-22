@@ -7,6 +7,7 @@ import com.soyorim.acaj.common.Result;
 import com.soyorim.acaj.module.system.entity.SysUser;
 import com.soyorim.acaj.module.system.service.SysUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,7 @@ public class SysUserController {
         return Result.ok(user);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public Result<?> add(@RequestBody SysUser user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -47,6 +49,7 @@ public class SysUserController {
         return Result.ok();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping
     public Result<?> update(@RequestBody SysUser user) {
         if (user.getPassword() != null && !user.getPassword().isBlank()) {
@@ -58,6 +61,7 @@ public class SysUserController {
         return Result.ok();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public Result<?> delete(@PathVariable Long id) {
         sysUserService.removeById(id);

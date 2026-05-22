@@ -4,6 +4,7 @@ import com.soyorim.acaj.common.Result;
 import com.soyorim.acaj.module.system.entity.SysMenu;
 import com.soyorim.acaj.module.system.mapper.SysMenuMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -39,18 +40,21 @@ public class SysMenuController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public Result<?> add(@RequestBody SysMenu menu) {
         sysMenuMapper.insert(menu);
         return Result.ok();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping
     public Result<?> update(@RequestBody SysMenu menu) {
         sysMenuMapper.updateById(menu);
         return Result.ok();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public Result<?> delete(@PathVariable Long id) {
         sysMenuMapper.deleteById(id);

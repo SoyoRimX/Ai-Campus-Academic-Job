@@ -6,11 +6,13 @@ import com.soyorim.acaj.common.Result;
 import com.soyorim.acaj.module.system.entity.SysRole;
 import com.soyorim.acaj.module.system.mapper.SysRoleMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/system/role")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class SysRoleController {
 
     private final SysRoleMapper sysRoleMapper;

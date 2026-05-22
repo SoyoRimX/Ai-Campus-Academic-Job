@@ -97,6 +97,7 @@ CREATE TABLE academic_student (
     required_credits DECIMAL(5,1) DEFAULT 0.0 COMMENT '应修学分',
     fail_count      INT          DEFAULT 0 COMMENT '不及格科目数',
     advisor         VARCHAR(50)  DEFAULT NULL COMMENT '辅导员',
+    advisor_id      BIGINT       DEFAULT NULL COMMENT '辅导员用户ID',
     enrollment_year INT          DEFAULT NULL COMMENT '入学年份',
     create_time     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     update_time     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

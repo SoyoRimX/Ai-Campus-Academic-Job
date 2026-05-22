@@ -21,6 +21,7 @@ public class AcademicStudent {
     private Integer requiredCredits;
     private Integer failCount;
     private String advisor;
+    private Long advisorId;
     private Integer enrollmentYear;
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

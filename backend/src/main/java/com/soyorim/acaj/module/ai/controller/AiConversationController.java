@@ -1,6 +1,7 @@
 package com.soyorim.acaj.module.ai.controller;
 
 import com.soyorim.acaj.common.Result;
+import com.soyorim.acaj.config.security.SecurityUtils;
 import com.soyorim.acaj.module.ai.entity.AiConversation;
 import com.soyorim.acaj.module.ai.service.AiConversationService;
 import com.soyorim.acaj.module.ai.service.AiService;
@@ -21,8 +22,8 @@ public class AiConversationController {
 
     @PostMapping("/chat")
     public Result<Map<String, Object>> chat(@RequestBody Map<String, Object> body) {
-        Long userId = body.get("userId") != null
-                ? Long.valueOf(body.get("userId").toString()) : null;
+        // userId 从 JWT/SecurityContext 获取，不再从请求体获取，防止身份冒充
+        Long userId = SecurityUtils.getCurrentUserId();
         String sessionId = body.get("sessionId") != null
                 ? body.get("sessionId").toString() : null;
         String message = body.get("message") != null
@@ -32,7 +33,6 @@ public class AiConversationController {
             sessionId = UUID.randomUUID().toString().replace("-", "");
         }
 
-        // Save user message
         AiConversation userMsg = new AiConversation();
         userMsg.setUserId(userId);
         userMsg.setSessionId(sessionId);
@@ -41,7 +41,6 @@ public class AiConversationController {
         userMsg.setTokens(message.length());
         aiConversationService.save(userMsg);
 
-        // Call AI service (fallback to rule engine if not configured)
         String reply = aiService.chat(message);
         AiConversation aiMsg = new AiConversation();
         aiMsg.setUserId(userId);
@@ -61,12 +60,16 @@ public class AiConversationController {
 
     @GetMapping("/conversations/{userId}")
     public Result<List<Map<String, Object>>> listSessions(@PathVariable Long userId) {
+        // 仅允许查看自己的会话，管理员可查看任意用户
+        if (!SecurityUtils.isCurrentUser(userId) && !SecurityUtils.isAdmin()) {
+            return Result.fail("无权查看其他用户的会话");
+        }
+
         List<AiConversation> all = aiConversationService.list(
                 new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<AiConversation>()
                         .eq(AiConversation::getUserId, userId)
                         .orderByAsc(AiConversation::getCreateTime));
 
-        // Group by sessionId and pick first/latest info per session
         Map<String, List<AiConversation>> grouped = all.stream()
                 .collect(Collectors.groupingBy(AiConversation::getSessionId, LinkedHashMap::new, Collectors.toList()));
 
@@ -89,7 +92,15 @@ public class AiConversationController {
 
     @GetMapping("/conversation/{sessionId}")
     public Result<List<AiConversation>> getConversation(@PathVariable String sessionId) {
+        Long currentUserId = SecurityUtils.getCurrentUserId();
         List<AiConversation> messages = aiConversationService.getBySessionId(sessionId);
+        // 校验会话归属：只有会话持有者和管理员可以查看
+        if (!messages.isEmpty()) {
+            Long ownerId = messages.get(0).getUserId();
+            if (!SecurityUtils.isCurrentUser(ownerId) && !SecurityUtils.isAdmin()) {
+                return Result.fail("无权查看此会话");
+            }
+        }
         return Result.ok(messages);
     }
 }

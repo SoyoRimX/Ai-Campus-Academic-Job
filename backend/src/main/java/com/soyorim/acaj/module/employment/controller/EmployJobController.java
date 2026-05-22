@@ -7,6 +7,7 @@ import com.soyorim.acaj.common.Result;
 import com.soyorim.acaj.module.employment.entity.EmployJob;
 import com.soyorim.acaj.module.employment.service.EmployJobService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,18 +39,21 @@ public class EmployJobController {
         return Result.ok(job);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @PostMapping("/job")
     public Result<EmployJob> create(@RequestBody EmployJob employJob) {
         employJobService.save(employJob);
         return Result.ok(employJob);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @PutMapping("/job")
     public Result<EmployJob> update(@RequestBody EmployJob employJob) {
         employJobService.updateById(employJob);
         return Result.ok(employJob);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @DeleteMapping("/job/{id}")
     public Result<Void> delete(@PathVariable Long id) {
         employJobService.removeById(id);

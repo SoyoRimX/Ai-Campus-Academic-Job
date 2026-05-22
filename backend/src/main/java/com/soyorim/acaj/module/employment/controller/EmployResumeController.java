@@ -3,21 +3,17 @@ package com.soyorim.acaj.module.employment.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.soyorim.acaj.common.Result;
-import com.soyorim.acaj.config.security.JwtUtil;
+import com.soyorim.acaj.config.security.SecurityUtils;
 import com.soyorim.acaj.module.academic.entity.AcademicStudent;
 import com.soyorim.acaj.module.academic.mapper.AcademicStudentMapper;
 import com.soyorim.acaj.module.employment.entity.EmployResume;
 import com.soyorim.acaj.module.employment.service.EmployResumeService;
 import com.soyorim.acaj.module.system.entity.SysUser;
 import com.soyorim.acaj.module.system.mapper.SysUserMapper;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/employ")
@@ -27,26 +23,14 @@ public class EmployResumeController {
     private final EmployResumeService employResumeService;
     private final AcademicStudentMapper academicStudentMapper;
     private final SysUserMapper sysUserMapper;
-    private final JwtUtil jwtUtil;
-
-    private Long getUserId(HttpServletRequest req) {
-        String h = req.getHeader("Authorization");
-        return (h != null && h.startsWith("Bearer ")) ? jwtUtil.getUserId(h.substring(7)) : null;
-    }
-
-    private String getRole(HttpServletRequest req) {
-        String h = req.getHeader("Authorization");
-        return (h != null && h.startsWith("Bearer ")) ? jwtUtil.parseToken(h.substring(7)).get("role", String.class) : null;
-    }
 
     @GetMapping("/resumes")
     public Result<Map<String, Object>> listAll(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size,
-            HttpServletRequest request) {
+            @RequestParam(defaultValue = "10") int size) {
         LambdaQueryWrapper<EmployResume> wrapper = new LambdaQueryWrapper<>();
-        String role = getRole(request);
-        Long userId = getUserId(request);
+        String role = SecurityUtils.getCurrentUserRole();
+        Long userId = SecurityUtils.getCurrentUserId();
 
         if ("ROLE_STUDENT".equals(role)) {
             AcademicStudent me = academicStudentMapper.selectOne(
@@ -54,14 +38,9 @@ public class EmployResumeController {
             if (me != null) wrapper.eq(EmployResume::getStudentId, me.getId());
             else wrapper.eq(EmployResume::getStudentId, -1L);
         } else if ("ROLE_TEACHER".equals(role)) {
-            SysUser teacher = sysUserMapper.selectById(userId);
-            if (teacher != null && teacher.getRealName() != null) {
-                List<AcademicStudent> advised = academicStudentMapper.selectList(
-                        new LambdaQueryWrapper<AcademicStudent>().eq(AcademicStudent::getAdvisor, teacher.getRealName()));
-                List<Long> ids = advised.stream().map(AcademicStudent::getId).toList();
-                if (!ids.isEmpty()) wrapper.in(EmployResume::getStudentId, ids);
-                else wrapper.eq(EmployResume::getStudentId, -1L);
-            }
+            List<Long> advisedIds = getAdvisedStudentIds(userId);
+            if (!advisedIds.isEmpty()) wrapper.in(EmployResume::getStudentId, advisedIds);
+            else wrapper.eq(EmployResume::getStudentId, -1L);
         }
 
         wrapper.orderByDesc(EmployResume::getCreateTime);
@@ -80,7 +59,6 @@ public class EmployResumeController {
             map.put("isDefault", r.getIsDefault());
             map.put("createTime", r.getCreateTime());
             map.put("updateTime", r.getUpdateTime());
-
             AcademicStudent stu = academicStudentMapper.selectById(r.getStudentId());
             if (stu != null) {
                 SysUser user = sysUserMapper.selectById(stu.getUserId());
@@ -103,12 +81,29 @@ public class EmployResumeController {
 
     @GetMapping("/resume/{studentId}")
     public Result<EmployResume> getByStudentId(@PathVariable Long studentId) {
+        if (!canAccessStudentId(studentId)) {
+            return Result.fail("无权查看该简历");
+        }
         EmployResume resume = employResumeService.getByStudentId(studentId);
         return Result.ok(resume);
     }
 
     @PostMapping("/resume")
     public Result<EmployResume> save(@RequestBody EmployResume employResume) {
+        // 学生只能保存自己的简历
+        if (!SecurityUtils.isAdmin()) {
+            if ("ROLE_STUDENT".equals(SecurityUtils.getCurrentUserRole())) {
+                AcademicStudent me = academicStudentMapper.selectOne(
+                        new LambdaQueryWrapper<AcademicStudent>().eq(AcademicStudent::getUserId, SecurityUtils.getCurrentUserId()));
+                if (me == null || !me.getId().equals(employResume.getStudentId())) {
+                    return Result.fail("只能保存自己的简历");
+                }
+            } else if ("ROLE_TEACHER".equals(SecurityUtils.getCurrentUserRole())) {
+                if (!canAccessStudentId(employResume.getStudentId())) {
+                    return Result.fail("只能保存管辖学生的简历");
+                }
+            }
+        }
         employResumeService.saveOrUpdate(employResume);
         return Result.ok(employResume);
     }
@@ -120,6 +115,9 @@ public class EmployResumeController {
                 new LambdaQueryWrapper<AcademicStudent>().eq(AcademicStudent::getStudentNo, studentNo));
         if (student == null) {
             return Result.fail("学号不存在");
+        }
+        if (!canAccessStudentId(student.getId())) {
+            return Result.fail("无权为此学号生成简历");
         }
         SysUser user = sysUserMapper.selectById(student.getUserId());
         String name = user != null ? user.getRealName() : "";
@@ -135,5 +133,33 @@ public class EmployResumeController {
                 "  \"aiSuggestion\": \"建议补充更多项目细节和技术栈深度描述，突出个人在团队中的角色和贡献。\"\n" +
                 "}";
         return Result.ok(generated);
+    }
+
+    private List<Long> getAdvisedStudentIds(Long teacherUserId) {
+        SysUser teacher = sysUserMapper.selectById(teacherUserId);
+        if (teacher == null) return List.of();
+        List<AcademicStudent> advised = academicStudentMapper.selectList(
+                new LambdaQueryWrapper<AcademicStudent>().eq(AcademicStudent::getAdvisorId, teacherUserId));
+        if (!advised.isEmpty()) return advised.stream().map(AcademicStudent::getId).toList();
+        if (teacher.getRealName() != null) {
+            advised = academicStudentMapper.selectList(
+                    new LambdaQueryWrapper<AcademicStudent>().eq(AcademicStudent::getAdvisor, teacher.getRealName()));
+        }
+        return advised.stream().map(AcademicStudent::getId).toList();
+    }
+
+    private boolean canAccessStudentId(Long targetStudentId) {
+        if (targetStudentId == null) return false;
+        String role = SecurityUtils.getCurrentUserRole();
+        if ("ROLE_ADMIN".equals(role)) return true;
+        if ("ROLE_STUDENT".equals(role)) {
+            AcademicStudent me = academicStudentMapper.selectOne(
+                    new LambdaQueryWrapper<AcademicStudent>().eq(AcademicStudent::getUserId, SecurityUtils.getCurrentUserId()));
+            return me != null && me.getId().equals(targetStudentId);
+        }
+        if ("ROLE_TEACHER".equals(role)) {
+            return getAdvisedStudentIds(SecurityUtils.getCurrentUserId()).contains(targetStudentId);
+        }
+        return false;
     }
 }

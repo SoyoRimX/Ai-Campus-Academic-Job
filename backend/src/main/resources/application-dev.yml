@@ -1,22 +1,12 @@
 spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/acaj?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:file:./data/acaj;MODE=MySQL;AUTO_RECONNECT=TRUE
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-  sql:
-    init:
-      mode: always
-      continue-on-error: true
-      schema-locations: classpath:schema-h2.sql
-      data-locations: classpath:data-h2.sql
 
 logging:
   level:

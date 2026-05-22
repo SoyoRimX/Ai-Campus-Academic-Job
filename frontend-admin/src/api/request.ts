@@ -25,6 +25,7 @@ request.interceptors.response.use(
       ElMessage.error(data.message || '请求失败')
       if (data.code === 401) {
         localStorage.removeItem('token')
+        localStorage.removeItem('userInfo')
         router.push('/login')
       }
       return Promise.reject(new Error(data.message))
@@ -32,7 +33,27 @@ request.interceptors.response.use(
     return data
   },
   error => {
-    ElMessage.error('网络错误，请稍后重试')
+    // 网络层错误：区分超时、HTTP 错误码等场景
+    if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+      ElMessage.error('请求超时，请检查网络连接')
+    } else if (error.response) {
+      const status = error.response.status
+      const serverMsg = error.response.data?.message || ''
+      if (status === 401) {
+        ElMessage.error('登录已过期，请重新登录')
+        localStorage.removeItem('token')
+        localStorage.removeItem('userInfo')
+        router.push('/login')
+      } else if (status === 403) {
+        ElMessage.error(serverMsg || '权限不足')
+      } else if (status >= 500) {
+        ElMessage.error(serverMsg || '服务器异常，请稍后重试')
+      } else {
+        ElMessage.error(serverMsg || '请求失败')
+      }
+    } else {
+      ElMessage.error('网络连接失败，请检查后端服务是否启动')
+    }
     return Promise.reject(error)
   }
 )

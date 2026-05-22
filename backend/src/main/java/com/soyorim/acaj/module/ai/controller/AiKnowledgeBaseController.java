@@ -8,6 +8,7 @@ import com.soyorim.acaj.common.Result;
 import com.soyorim.acaj.module.ai.entity.AiKnowledgeBase;
 import com.soyorim.acaj.module.ai.service.AiKnowledgeBaseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,6 +34,7 @@ public class AiKnowledgeBaseController {
         return Result.ok(PageResult.of(iPage));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @PostMapping("/knowledge")
     public Result<AiKnowledgeBase> add(@RequestBody AiKnowledgeBase knowledgeBase) {
         knowledgeBase.setStatus(0);
@@ -40,6 +42,7 @@ public class AiKnowledgeBaseController {
         return Result.ok(knowledgeBase);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @PutMapping("/knowledge")
     public Result<AiKnowledgeBase> update(@RequestBody AiKnowledgeBase knowledgeBase) {
         if (knowledgeBase.getId() == null) {
@@ -49,6 +52,7 @@ public class AiKnowledgeBaseController {
         return Result.ok(knowledgeBase);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
     @DeleteMapping("/knowledge/{id}")
     public Result<String> delete(@PathVariable Long id) {
         aiKnowledgeBaseService.removeById(id);
