@@ -1,58 +1,92 @@
-<!-- pages/academic/index.wxml -->
-<view class="page">
+<!--
+  ============================================
+  AI校园学业就业助手 — 学业页
+  盐系极简设计风格
+  ============================================
+-->
+<view class="academic-page">
 
-  <!-- Student Info Card -->
-  <view class="card info-card">
-    <view class="info-top">
-      <view class="avatar-placeholder">
-        <text class="avatar-emoji">👤</text>
+  <!-- ===== 用户信息卡片 ===== -->
+  <view class="student-card">
+    <view class="student-card-left">
+      <!-- 头像占位 -->
+      <view class="student-avatar">
+        <text class="student-avatar-emoji">👤</text>
       </view>
-      <view class="info-text">
-        <text class="info-name">{{studentInfo.studentNo}}</text>
-        <text class="info-detail">{{studentInfo.major}} · {{studentInfo.grade}}</text>
+      <!-- 姓名 + 专业年级 -->
+      <view class="student-info">
+        <text class="student-name">{{studentInfo.name}}</text>
+        <text class="student-major">{{studentInfo.major}} · {{studentInfo.grade}}</text>
       </view>
     </view>
-  </view>
-
-  <!-- GPA Display -->
-  <view class="card gpa-card">
-    <text class="gpa-label">平均绩点 (GPA)</text>
-    <text class="gpa-value">{{studentInfo.gpa}}</text>
-    <view class="gpa-scale">
-      <text class="gpa-max">/ 4.0</text>
+    <!-- 右侧：圆形绩点展示 -->
+    <view class="gpa-circle">
+      <view class="gpa-circle-inner">
+        <text class="gpa-value">{{studentInfo.gpa}}</text>
+        <text class="gpa-label">/ 4.0</text>
+      </view>
+      <!-- 绩点环形装饰 -->
+      <view class="gpa-ring"></view>
     </view>
   </view>
 
-  <!-- Credit Progress -->
-  <view class="card progress-card">
-    <view class="progress-header">
-      <text class="progress-title">学分进度</text>
-      <text class="progress-num">{{studentInfo.totalCredits}} / {{studentInfo.requiredCredits}}</text>
+  <!-- ===== 学分进度区 ===== -->
+  <view class="credit-card">
+    <view class="credit-header">
+      <text class="credit-title">学分进度</text>
+      <text class="credit-num">{{studentInfo.totalCredits}} / {{studentInfo.requiredCredits}}</text>
     </view>
-    <view class="progress-bar-bg">
-      <view class="progress-bar-fill" style="width: {{creditPercent}}%"></view>
+    <!-- 线性进度条 -->
+    <view class="progress-bar">
+      <view
+        class="progress-bar-fill animated"
+        style="width: {{creditPercent}}%">
+      </view>
     </view>
-    <text class="progress-hint">距毕业要求还需 {{studentInfo.requiredCredits - studentInfo.totalCredits}} 学分</text>
+    <view class="credit-footer">
+      <text class="credit-hint">距毕业要求还需 {{remainingCredits}} 学分</text>
+      <text class="credit-percent">{{creditPercent}}%</text>
+    </view>
   </view>
 
-  <!-- Stats Row -->
+  <!-- ===== 状态模块：学业进度 + 不及格科目 ===== -->
   <view class="stats-row">
-    <view class="stat-card fail">
-      <text class="stat-value">{{studentInfo.failCount}}</text>
-      <text class="stat-label">不及格科目数</text>
+    <!-- 学业进度卡片 -->
+    <view class="stat-card">
+      <view class="stat-icon-wrap progress-icon">
+        <text class="stat-icon-emoji">📊</text>
+      </view>
+      <text class="stat-title">学业进度</text>
+      <view class="stat-data">
+        <text class="stat-value">{{studentInfo.totalCredits}}</text>
+        <text class="stat-unit">学分已修</text>
+      </view>
+      <text class="stat-desc">总需 {{studentInfo.requiredCredits}} 学分</text>
     </view>
-    <view class="stat-card earned">
-      <text class="stat-value">{{studentInfo.totalCredits}}</text>
-      <text class="stat-label">已获学分</text>
+
+    <!-- 不及格科目卡片 -->
+    <view class="stat-card">
+      <view class="stat-icon-wrap fail-icon">
+        <text class="stat-icon-emoji">⚠️</text>
+      </view>
+      <text class="stat-title">不及格科目</text>
+      <view class="stat-data">
+        <text class="stat-value fail-value">{{studentInfo.failCount}}</text>
+        <text class="stat-unit">门</text>
+      </view>
+      <text class="stat-desc fail-desc">{{failStatusText}}</text>
     </view>
   </view>
 
-  <!-- Warnings Section -->
-  <view class="section">
-    <text class="section-title">⚠️ 预警信息</text>
+  <!-- ===== 预警信息模块 ===== -->
+  <view class="section-header">
+    <view class="section-title-bar">
+      <view class="section-title-dot"></view>
+      <text class="section-title-text">学业预警</text>
+    </view>
   </view>
 
-  <view wx:if="{{warnings.length > 0}}" class="warning-list">
+  <view class="warning-list" wx:if="{{warnings.length > 0}}">
     <view class="card warning-item" wx:for="{{warnings}}" wx:key="id">
       <view class="warning-top">
         <text class="warning-title">{{item.title}}</text>
@@ -63,9 +97,12 @@
     </view>
   </view>
 
-  <view wx:else class="empty-state">
+  <view class="empty-state" wx:else>
     <text class="empty-icon">🎉</text>
-    <text class="empty-text">暂无学业预警</text>
+    <text class="empty-text">暂无学业预警，继续保持！</text>
   </view>
+
+  <!-- 底部安全距离预留 -->
+  <view class="safe-area-bottom" style="height: 40rpx;"></view>
 
 </view>

@@ -1,0 +1,210 @@
+/*
+ * ============================================
+ *  AI校园学业就业助手 — 等级详情页样式
+ *  盐系 · 竖排卡片 · 当前高亮
+ * ============================================
+ */
+
+.ld-page {
+  min-height: 100vh;
+  background-color: #F8F9FA;
+}
+
+/* ===========================================
+   公式说明卡片
+   =========================================== */
+.ld-header {
+  padding: 16px 24px 0;
+}
+
+.ld-formula-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(157, 180, 192, 0.10);
+}
+
+.ld-formula-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 10px;
+}
+
+.ld-formula-desc {
+  display: block;
+  font-size: 14px;
+  color: #6C757D;
+  line-height: 1.7;
+  margin-bottom: 4px;
+}
+
+.ld-formula-current {
+  margin-top: 8px;
+  padding: 8px 0;
+}
+
+.ld-formula-sub {
+  font-size: 14px;
+  font-weight: 600;
+  color: #9DB4C0;
+}
+
+.ld-formula-hint {
+  display: block;
+  font-size: 12px;
+  color: #999999;
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
+/* ===========================================
+   等级列表标题
+   =========================================== */
+.ld-list-title {
+  padding: 24px 24px 12px;
+}
+
+.ld-list-title-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* ===========================================
+   加载状态
+   =========================================== */
+.ld-loading {
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+.ld-loading-text {
+  font-size: 14px;
+  color: #999999;
+}
+
+/* ===========================================
+   等级卡片列表
+   =========================================== */
+.ld-list {
+  padding: 0 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 单张等级卡片 */
+.ld-card {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 2px solid transparent;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* 当前等级高亮卡片 */
+.ld-card-active {
+  border-color: #9DB4C0;
+  box-shadow: 0 2px 12px rgba(157, 180, 192, 0.15);
+}
+
+.ld-card:hover {
+  /* 小程序 hover 由 hover-class 处理 */
+}
+
+/* LV 徽章 */
+.ld-card-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #ECF3F6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 14px;
+}
+
+.ld-card-active .ld-card-badge {
+  background-color: rgba(157, 180, 192, 0.20);
+}
+
+.ld-card-lv {
+  font-size: 14px;
+  font-weight: 700;
+  color: #9DB4C0;
+}
+
+/* 卡片正文 */
+.ld-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ld-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 4px;
+}
+
+.ld-card-range {
+  display: flex;
+}
+
+.ld-card-range-text {
+  font-size: 11px;
+  color: #999999;
+}
+
+/* 当前状态标记 */
+.ld-card-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.ld-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #9DB4C0;
+}
+
+.ld-status-text {
+  font-size: 12px;
+  color: #9DB4C0;
+  font-weight: 600;
+}
+
+/* 已完成标记 */
+.ld-card-check {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #ECF2EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ld-check-icon {
+  font-size: 14px;
+  color: #8AAA8B;
+  font-weight: 700;
+}

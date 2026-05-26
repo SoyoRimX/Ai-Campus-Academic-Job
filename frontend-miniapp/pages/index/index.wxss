@@ -1,233 +1,329 @@
-/* pages/index/index.wxss */
+/*
+ * ============================================
+ *  AI校园学业就业助手 — 首页样式
+ *  盐系极简 · 毛玻璃 frost · backdrop-filter
+ * ============================================
+ */
 
-.page {
-  min-height: 100vh;
-  background: #f5f5f5;
-  padding-bottom: 40rpx;
-}
-
-/* Header */
-.header {
+/* ===== 页面容器 ===== */
+.index-page {
   position: relative;
-  padding-bottom: 30rpx;
+  min-height: 100vh;
+  background-color: #F8F9FA;
+  z-index: 1;
 }
 
-.header-bg {
-  position: absolute;
+/* 页面背景装饰（为毛玻璃提供下层模糊源） */
+.page-bg-deco {
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: 320rpx;
-  background: linear-gradient(135deg, #4A90D9 0%, #6CB3F5 50%, #7EC8E3 100%);
-  border-radius: 0 0 40rpx 40rpx;
+  bottom: 0;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(157, 180, 192, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 70%, rgba(201, 214, 223, 0.10) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
 }
 
-.header-content {
-  position: relative;
+/* ===========================================
+   1. 顶部横向滑动公告栏 — 毛玻璃效果
+      + 自定义指示点（大小+亮度变化）
+   =========================================== */
+.notice-bar-wrap {
+  margin: 12px 16px 6px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.notice-swiper {
+  height: 44px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 12px;
+  border: 1px solid rgba(157, 180, 192, 0.18);
+}
+
+.notice-item {
   display: flex;
   align-items: center;
-  padding: 80rpx 40rpx 40rpx;
+  justify-content: center;
+  height: 100%;
+  padding: 0 20px;
 }
 
-.avatar-placeholder {
-  width: 100rpx;
-  height: 100rpx;
+.notice-icon {
+  font-size: 16px;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.notice-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333333;
+  letter-spacing: 1px;
+}
+
+/* ---- 自定义指示点容器 ---- */
+.notice-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 4px 0;
+}
+
+/* ---- 单个指示点（默认/非激活态） ---- */
+.notice-dot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
+  background-color: #D1D5DB;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---- 当前激活态：尺寸变大 + 亮度增强 + 颜色切换 ---- */
+.notice-dot-active {
+  width: 10px;
+  height: 10px;
+  background-color: #9DB4C0;
+  box-shadow: 0 0 6px rgba(157, 180, 192, 0.5);
+}
+
+/* ===========================================
+   2. 功能入口区 — 4个静态卡片一行排列
+      无需滑动，圆角+浅背景
+   =========================================== */
+.entry-section {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 4rpx solid rgba(255, 255, 255, 0.5);
-  margin-right: 24rpx;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 16px;
+  margin-bottom: 20px;
 }
 
-.avatar-emoji {
-  font-size: 48rpx;
-}
-
-.greeting {
-  display: flex;
-  flex-direction: column;
-}
-
-.greeting-text {
-  font-size: 40rpx;
-  font-weight: bold;
-  color: #fff;
-  margin-bottom: 8rpx;
-}
-
-.greeting-sub {
-  font-size: 26rpx;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-/* Menu Grid */
-.menu-grid {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0 30rpx;
-  margin-top: -10rpx;
-}
-
-.menu-card {
-  width: calc(50% - 15rpx);
-  background: #fff;
-  border-radius: 20rpx;
-  padding: 36rpx 20rpx;
-  margin: 0 10rpx 20rpx 0;
+.entry-item {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 14px 6px;
+  border-radius: 12px;
+  background-color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.entry-hover {
+  transform: scale(1.04);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.entry-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-  box-sizing: border-box;
+  margin-bottom: 8px;
+  background-color: #ECF3F6;
 }
 
-.menu-card:nth-child(2n) {
-  margin-right: 0;
-  margin-left: 5rpx;
+.entry-icon {
+  font-size: 22px;
 }
 
-.menu-card:nth-child(2n+1) {
-  margin-left: 0;
-  margin-right: 10rpx;
-}
-
-.menu-card:active {
-  transform: scale(0.97);
-  transition: transform 0.15s;
-}
-
-.menu-icon {
-  font-size: 56rpx;
-  margin-bottom: 16rpx;
-}
-
-.menu-label {
-  font-size: 28rpx;
-  color: #333;
+.entry-label {
+  font-size: 12px;
+  color: #666666;
   font-weight: 500;
 }
 
-/* Section */
+/* ===========================================
+   3. 公用区块
+   =========================================== */
 .section {
-  padding: 0 30rpx;
-  margin-top: 30rpx;
+  padding: 0 16px;
+  margin-bottom: 20px;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20rpx;
+  margin-bottom: 12px;
 }
 
-.section-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333;
+.section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #9DB4C0;
+}
+
+.section-dot-warn {
+  background-color: #C9D6DF;
+}
+
+.section-title-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333333;
 }
 
 .section-more {
-  font-size: 24rpx;
-  color: #4A90D9;
+  font-size: 12px;
+  color: #9DB4C0;
 }
 
-/* Card List */
-.card-list {
-  background: #fff;
-  border-radius: 16rpx;
+/* ===========================================
+   毛玻璃卡片（推荐岗位 / 最新预警）
+   backdrop-filter 半透明磨砂
+   兼容微信小程序真机
+   =========================================== */
+.frost-card {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(157, 180, 192, 0.12);
   overflow: hidden;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
 }
 
-.card-item {
+/* ===========================================
+   推荐岗位列表
+   每行前添加公文包图标
+   =========================================== */
+.job-list {
+}
+
+.job-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 28rpx 30rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  padding: 14px 14px;
+  border-bottom: 1px solid rgba(224, 229, 233, 0.5);
+  gap: 10px;
 }
 
-.card-item:last-child {
+.job-item:last-child {
   border-bottom: none;
 }
 
-.card-item-left {
-  flex: 1;
+.job-hover {
+  background-color: rgba(157, 180, 192, 0.06);
+}
+
+/* 公文包图标 */
+.job-briefcase {
+  font-size: 20px;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
   display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  margin-right: 20rpx;
-}
-
-.card-item-title {
-  font-size: 28rpx;
-  color: #333;
-  font-weight: 500;
-  margin-bottom: 6rpx;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.card-item-desc {
-  font-size: 24rpx;
-  color: #999;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.card-item-salary {
-  font-size: 28rpx;
-  color: #F56C6C;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-/* Tags */
-.tag {
-  padding: 6rpx 18rpx;
-  border-radius: 8rpx;
-  font-size: 22rpx;
-  white-space: nowrap;
-}
-
-.tag-red {
-  background: #FEF0F0;
-  color: #F56C6C;
-}
-
-.tag-orange {
-  background: #FDF6EC;
-  color: #E6A23C;
-}
-
-.tag-blue {
-  background: #E8F4FD;
-  color: #4A90D9;
-}
-
-/* Empty State */
-.empty-state {
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 60rpx 0;
-  background: #fff;
-  border-radius: 16rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  background-color: #ECF3F6;
+  border-radius: 8px;
 }
 
-.empty-icon {
-  font-size: 64rpx;
-  margin-bottom: 16rpx;
+.job-item-left {
+  flex: 1;
+  overflow: hidden;
 }
 
-.empty-text {
-  font-size: 26rpx;
-  color: #999;
+.job-item-name {
+  font-size: 14px;
+  color: #333333;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+
+.job-item-company {
+  font-size: 12px;
+  color: #999999;
+}
+
+.job-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.job-item-salary {
+  font-size: 14px;
+  color: #C59B9B;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.job-item-date {
+  font-size: 11px;
+  color: #D1D5DB;
+}
+
+/* ===========================================
+   最新预警列表（毛玻璃）
+   =========================================== */
+.announce-list {
+}
+
+.announce-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  border-bottom: 1px solid rgba(224, 229, 233, 0.5);
+}
+
+.announce-item:last-child {
+  border-bottom: none;
+}
+
+.announce-hover {
+  background-color: rgba(157, 180, 192, 0.06);
+}
+
+.announce-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.announce-bullet {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #C9D6DF;
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+
+.announce-title {
+  font-size: 14px;
+  color: #333333;
+  flex: 1;
+}
+
+.announce-date {
+  font-size: 12px;
+  color: #999999;
+  white-space: nowrap;
+  flex-shrink: 0;
 }

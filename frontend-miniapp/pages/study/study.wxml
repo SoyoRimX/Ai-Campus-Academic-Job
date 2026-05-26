@@ -1,0 +1,97 @@
+<!--
+  ============================================
+  AI校园学业就业助手 — 学业页
+  左中右三列 · 小GPA环
+  ============================================
+-->
+<view class="study-page">
+
+  <!-- ===========================================
+      1. 顶部个人信息区：左-中-右三列对齐
+         左：头像
+         中：姓名+LV / 专业年级
+         右：GPA环形进度 + 绩点评级
+      =========================================== -->
+  <view class="student-card">
+    <!-- 左：头像 -->
+    <view class="sc-left">
+      <view class="student-avatar">
+        <text class="student-avatar-emoji">👤</text>
+      </view>
+    </view>
+    <!-- 中：姓名+LV / 专业年级 -->
+    <view class="sc-center">
+      <view class="sc-center-row">
+        <text class="student-name text-ellipsis">{{studentInfo.name}}</text>
+        <text class="student-lv" bindtap="onLvTap">LV.{{lvLevel}} {{lvTitle}}</text>
+      </view>
+      <text class="student-major text-ellipsis">{{studentInfo.major}} · {{studentInfo.grade}}</text>
+    </view>
+    <!-- 右：GPA环形进度 + 绩点评级 -->
+    <view class="sc-right">
+      <view class="sc-right-ring">
+        <canvas
+          class="gpa-small-canvas"
+          canvas-id="gpaSmallCanvas"
+          id="gpaSmallCanvas">
+        </canvas>
+        <view class="gpa-small-center">
+          <text class="gpa-small-value">{{studentInfo.gpa}}</text>
+          <text class="gpa-small-unit">/4.0</text>
+        </view>
+      </view>
+      <text class="sc-right-rating gpa-rating-text-{{gpaRatingClass}}">{{gpaRating}}</text>
+    </view>
+  </view>
+
+  <!-- ===========================================
+      2. 学分明细区（毛玻璃圆角）
+      =========================================== -->
+  <view class="credit-card">
+    <view class="credit-header">
+      <view class="section-title-wrap">
+        <view class="section-title-dot"></view>
+        <text class="section-title-text">学分明细</text>
+      </view>
+      <text class="credit-num">{{studentInfo.totalCredits}} / {{studentInfo.requiredCredits}}</text>
+    </view>
+    <view class="progress-bar">
+      <view class="progress-fill" style="transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); width: {{creditPercent}}%;"></view>
+    </view>
+    <view class="credit-footer">
+      <text class="credit-hint">距毕业要求还需 {{remainingCredits}} 学分</text>
+      <text class="credit-percent">{{creditPercent}}%</text>
+    </view>
+  </view>
+
+  <!-- ===========================================
+      3. 底部数据卡片区（毛玻璃）
+      =========================================== -->
+  <view class="stats-row">
+    <view class="stat-card frost-card-sm" hover-class="card-hover">
+      <view class="stat-icon-wrap stat-icon-progress">
+        <text class="stat-icon">📊</text>
+      </view>
+      <text class="stat-title">学业进度</text>
+      <view class="stat-data">
+        <text class="stat-number">{{creditPercent}}%</text>
+        <text class="stat-unit-text">完成</text>
+      </view>
+      <text class="stat-desc">{{studentInfo.totalCredits}} / {{studentInfo.requiredCredits}} 学分</text>
+    </view>
+    <view class="stat-card frost-card-sm" hover-class="card-hover">
+      <view class="stat-icon-wrap stat-icon-fail">
+        <text class="stat-icon">⚠️</text>
+      </view>
+      <text class="stat-title">不及格科目</text>
+      <view class="stat-data">
+        <text class="stat-number stat-number-fail">{{studentInfo.failCount}}</text>
+        <text class="stat-unit-text">门</text>
+      </view>
+      <text class="stat-desc stat-desc-fail">{{failStatusText}}</text>
+    </view>
+  </view>
+
+  <view style="height: 20px;"></view>
+
+</view>

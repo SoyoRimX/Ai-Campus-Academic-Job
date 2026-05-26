@@ -59,7 +59,13 @@ Page({
   // === 页面导航 ===
   navigateTo(e) {
     const url = e.currentTarget.dataset.url
-    if (url) {
+    if (!url) return
+    /* tabBar 页面使用 switchTab，其他页面使用 navigateTo */
+    if (url.indexOf('/pages/study/study') === 0 ||
+        url.indexOf('/pages/resume/index') === 0 ||
+        url.indexOf('/pages/jobs/index') === 0) {
+      wx.switchTab({ url })
+    } else {
       wx.navigateTo({ url })
     }
   },

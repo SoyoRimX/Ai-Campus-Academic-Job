@@ -1,80 +1,135 @@
-<!-- pages/index/index.wxml -->
-<view class="page">
+<!--
+  ============================================
+  AI校园学业就业助手 — 首页
+  盐系极简 · 毛玻璃模块 · 横向公告轮播
+  ============================================
+-->
 
-  <!-- Header -->
-  <view class="header">
-    <view class="header-bg"></view>
-    <view class="header-content">
-      <view class="avatar-placeholder">
-        <text class="avatar-emoji">👤</text>
-      </view>
-      <view class="greeting">
-        <text class="greeting-text">你好，{{greeting}}</text>
-        <text class="greeting-sub">欢迎使用 AI 校园助手</text>
+<!-- ===== 背景装饰层（毛玻璃需要下层有内容可模糊） ===== -->
+<view class="page-bg-deco"></view>
+
+<view class="index-page">
+
+  <!-- ===========================================
+      1. 顶部横向滑动轮播公告栏
+         毛玻璃 + 圆角 + 横滑 + 自定义指示点
+         5s自动切换 | 触摸暂停3s恢复
+      =========================================== -->
+  <view class="notice-bar-wrap" bindtouchstart="onNoticeTouchStart" bindtouchend="onNoticeTouchEnd">
+    <swiper
+      class="notice-swiper"
+      indicator-dots="{{false}}"
+      autoplay="{{noticeAutoPlay}}"
+      interval="{{5000}}"
+      duration="{{500}}"
+      circular="{{true}}"
+      easing-function="easeInOutCubic"
+      bindchange="onNoticeChange">
+      <swiper-item wx:for="{{noticeList}}" wx:key="id">
+        <view class="notice-item">
+          <text class="notice-icon">📢</text>
+          <text class="notice-text">{{item.text}}</text>
+        </view>
+      </swiper-item>
+    </swiper>
+    <!-- 自定义指示点：数量动态匹配公告总数 -->
+    <view class="notice-dots" wx:if="{{noticeList.length > 1}}">
+      <view
+        class="notice-dot {{index === noticeCurrent ? 'notice-dot-active' : ''}}"
+        wx:for="{{noticeList}}"
+        wx:key="id">
       </view>
     </view>
   </view>
 
-  <!-- Menu Grid 2x2 -->
-  <view class="menu-grid">
-    <view class="menu-card" bindtap="navigateTo" data-url="/pages/academic/index">
-      <text class="menu-icon">📚</text>
-      <text class="menu-label">学业情况</text>
-    </view>
-    <view class="menu-card" bindtap="navigateTo" data-url="/pages/resume/index">
-      <text class="menu-icon">📄</text>
-      <text class="menu-label">我的简历</text>
-    </view>
-    <view class="menu-card" bindtap="navigateTo" data-url="/pages/jobs/index">
-      <text class="menu-icon">💼</text>
-      <text class="menu-label">职位搜索</text>
-    </view>
-    <view class="menu-card" bindtap="navigateTo" data-url="/pages/interview/index">
-      <text class="menu-icon">🤖</text>
-      <text class="menu-label">AI面试</text>
+  <!-- ===========================================
+      2. 功能入口区 — 4个静态卡片一行排列
+         无滑动，圆角 + 浅背景
+      =========================================== -->
+  <view class="entry-section">
+    <view class="entry-item tappable"
+          wx:for="{{entryList}}"
+          wx:key="id"
+          hover-class="entry-hover"
+          bindtap="navigateTo"
+          data-url="{{item.url}}">
+      <view class="entry-icon-wrap">
+        <text class="entry-icon">{{item.icon}}</text>
+      </view>
+      <text class="entry-label">{{item.title}}</text>
     </view>
   </view>
 
-  <!-- Latest Warnings -->
+  <!-- ===========================================
+      3. 推荐岗位模块（毛玻璃背景）
+         backdrop-filter 实现柔和质感
+         每条前面加公文包图标
+      =========================================== -->
   <view class="section">
     <view class="section-header">
-      <text class="section-title">⚠️ 最新预警</text>
-      <text class="section-more" bindtap="navigateTo" data-url="/pages/academic/index">查看全部</text>
+      <view class="section-title-wrap">
+        <view class="section-title-dot"></view>
+        <text class="section-title-text">推荐岗位</text>
+      </view>
+      <text class="section-more tappable"
+            bindtap="navigateTo"
+            data-url="/pages/jobs/index">查看全部 ›</text>
     </view>
-    <view wx:if="{{warnings.length > 0}}" class="card-list">
-      <view class="card-item" wx:for="{{warnings}}" wx:key="id">
-        <view class="card-item-left">
-          <text class="card-item-title">{{item.title}}</text>
-          <text class="card-item-desc">{{item.desc}}</text>
+    <view class="frost-card job-list" wx:if="{{jobs.length > 0}}">
+      <view class="job-item tappable"
+            wx:for="{{jobs}}"
+            wx:key="id"
+            hover-class="job-hover"
+            bindtap="navigateTo"
+            data-url="/pages/jobs/detail?id={{item.id}}">
+        <!-- 公文包图标 -->
+        <text class="job-briefcase">💼</text>
+        <view class="job-item-left">
+          <text class="job-item-name text-ellipsis">{{item.title}}</text>
+          <text class="job-item-company text-ellipsis" style="position: relative; left: 33rpx; top: 3rpx">{{item.company}} · {{item.location}}</text>
         </view>
-        <text class="tag tag-{{item.tagType}}">{{item.tag}}</text>
+        <view class="job-item-right">
+          <text class="job-item-salary">{{item.salary}}</text>
+          <text class="job-item-date">{{item.date}}</text>
+        </view>
       </view>
     </view>
-    <view wx:else class="empty-state">
-      <text class="empty-icon">🎉</text>
-      <text class="empty-text">暂无预警</text>
-    </view>
-  </view>
-
-  <!-- Recommended Jobs -->
-  <view class="section">
-    <view class="section-header">
-      <text class="section-title">🔥 推荐岗位</text>
-      <text class="section-more" bindtap="navigateTo" data-url="/pages/jobs/index">查看全部</text>
-    </view>
-    <view wx:if="{{jobs.length > 0}}" class="card-list">
-      <view class="card-item" wx:for="{{jobs}}" wx:key="id">
-        <view class="card-item-left">
-          <text class="card-item-title">{{item.title}}</text>
-          <text class="card-item-desc">{{item.company}} · {{item.location}}</text>
-        </view>
-        <text class="card-item-salary">{{item.salary}}</text>
-      </view>
-    </view>
-    <view wx:else class="empty-state">
+    <view class="empty-state" wx:else>
       <text class="empty-icon">📭</text>
       <text class="empty-text">暂无推荐岗位</text>
     </view>
   </view>
+
+  <!-- ===========================================
+      4. 最新预警/公告模块（毛玻璃背景）
+         磨砂质感，半透明圆角
+      =========================================== -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-title-wrap">
+        <view class="section-title-dot section-dot-warn"></view>
+        <text class="section-title-text">最新预警</text>
+      </view>
+    </view>
+    <view class="frost-card announce-list" wx:if="{{announcements.length > 0}}">
+      <view class="announce-item tappable"
+            wx:for="{{announcements}}"
+            wx:key="id"
+            hover-class="announce-hover">
+        <view class="announce-left">
+          <view class="announce-bullet"></view>
+          <text class="announce-title text-ellipsis">{{item.title}}</text>
+        </view>
+        <text class="announce-date">{{item.date}}</text>
+      </view>
+    </view>
+    <view class="empty-state" wx:else>
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无最新预警</text>
+    </view>
+  </view>
+
+  <!-- 底部安全距离 -->
+  <view style="height: 20px;"></view>
 
 </view>

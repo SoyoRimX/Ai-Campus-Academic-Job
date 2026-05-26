@@ -1,0 +1,52 @@
+<!--
+  ============================================
+  AI校园学业就业助手 — 岗位推荐页
+  TabBar「岗位」入口
+  从首页提取完整的岗位模块
+  ============================================
+-->
+<view class="jobs-tab-page">
+
+  <!-- ===== 背景装饰层 ===== -->
+  <view class="page-bg-deco"></view>
+
+  <!-- ===== 推荐岗位模块（毛玻璃背景） ===== -->
+  <view class="section">
+    <view class="section-header">
+      <view class="section-title-wrap">
+        <view class="section-title-dot"></view>
+        <text class="section-title-text">推荐岗位</text>
+      </view>
+      <text class="section-more tappable"
+            bindtap="navigateTo"
+            data-url="/pages/jobs/index">查看全部 ›</text>
+    </view>
+    <view class="frost-card job-list" wx:if="{{jobs.length > 0}}">
+      <view class="job-item tappable"
+            wx:for="{{jobs}}"
+            wx:key="id"
+            hover-class="job-hover"
+            bindtap="navigateTo"
+            data-url="/pages/jobs/detail?id={{item.id}}">
+        <!-- 公文包图标 -->
+        <text class="job-briefcase">💼</text>
+        <view class="job-item-left">
+          <text class="job-item-name text-ellipsis">{{item.title}}</text>
+          <text class="job-item-company text-ellipsis" style="position: relative; left: 36rpx; top: 1rpx">{{item.company}} · {{item.location}}</text>
+        </view>
+        <view class="job-item-right">
+          <text class="job-item-salary">{{item.salary}}</text>
+          <text class="job-item-date">{{item.date}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="empty-state" wx:else>
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无推荐岗位</text>
+    </view>
+  </view>
+
+  <!-- 底部安全距离 -->
+  <view style="height: 20px;"></view>
+
+</view>

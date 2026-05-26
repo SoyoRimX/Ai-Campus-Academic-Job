@@ -1,0 +1,309 @@
+/*
+ * ============================================
+ *  AI校园学业就业助手 — 学业页样式
+ *  盐系 · 左中右三列 · 小GPA环 · 毛玻璃
+ * ============================================
+ */
+
+.study-page {
+  min-height: 100vh;
+  background-color: #F8F9FA;
+  padding: 16px;
+}
+
+/* ===========================================
+   1. 个人信息卡片：左中右三列对齐
+   =========================================== */
+.student-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(157, 180, 192, 0.10);
+  gap: 12px;
+}
+
+/* ---- 左列：头像 ---- */
+.sc-left {
+  flex-shrink: 0;
+}
+
+.student-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #E0E5E9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.student-avatar-emoji {
+  font-size: 24px;
+  opacity: 0.6;
+}
+
+/* ---- 中列：姓名+LV / 专业年级 ---- */
+.sc-center {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sc-center-row {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 4px;
+  overflow: hidden;
+}
+
+.student-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333333;
+  flex-shrink: 0;
+}
+
+.student-lv {
+  font-size: 12px;
+  color: #9DB4C0;
+  font-weight: 600;
+  margin-left: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.student-major {
+  font-size: 12px;
+  color: #999999;
+}
+
+/* ---- 右列：GPA环形 + 评级 ---- */
+.sc-right {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 小号 GPA 环形容器（与头像垂直中心对齐） */
+.sc-right-ring {
+  position: relative;
+  width: 68px;
+  height: 68px;
+}
+
+.gpa-small-canvas {
+  width: 68px;
+  height: 68px;
+}
+
+/* 环形中心数字 */
+.gpa-small-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gpa-small-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #9DB4C0;
+  line-height: 1;
+}
+
+.gpa-small-unit {
+  font-size: 10px;
+  color: #999999;
+  margin-top: 1px;
+}
+
+/* 评级文字（环下方） */
+.sc-right-rating {
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.gpa-rating-text-good { color: #8AAA8B; }
+.gpa-rating-text-excellent { color: #2A9D8F; }
+.gpa-rating-text-poor { color: #C59B9B; }
+
+/* ===========================================
+   2. 学分明细区（毛玻璃圆角）
+   =========================================== */
+.credit-card {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(157, 180, 192, 0.10);
+}
+
+.credit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #9DB4C0;
+}
+
+.section-title-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.credit-num {
+  font-size: 14px;
+  color: #9DB4C0;
+  font-weight: 600;
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: #E0E5E9;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #9DB4C0, #B8C5D6);
+  border-radius: 4px;
+}
+
+.credit-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.credit-hint {
+  font-size: 12px;
+  color: #999999;
+}
+
+.credit-percent {
+  font-size: 12px;
+  color: #9DB4C0;
+  font-weight: 600;
+}
+
+/* ===========================================
+   3. 底部数据卡片区（毛玻璃）
+   =========================================== */
+.stats-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.frost-card-sm {
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(157, 180, 192, 0.10);
+}
+
+.stat-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.stat-icon-progress {
+  background-color: #ECF3F6;
+}
+
+.stat-icon-fail {
+  background-color: #F5ECEC;
+}
+
+.stat-icon {
+  font-size: 22px;
+}
+
+.stat-title {
+  font-size: 13px;
+  color: #999999;
+  margin-bottom: 8px;
+}
+
+.stat-data {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.stat-number {
+  font-size: 28px;
+  font-weight: 700;
+  color: #666666;
+  line-height: 1;
+}
+
+.stat-number-fail {
+  color: #C59B9B;
+}
+
+.stat-unit-text {
+  font-size: 12px;
+  color: #999999;
+}
+
+.stat-desc {
+  font-size: 11px;
+  color: #999999;
+}
+
+.stat-desc-fail {
+  color: #C59B9B;
+}

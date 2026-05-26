@@ -1,36 +1,45 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/academic/index",
+    "pages/jobs-tab/jobs-tab",
+    "pages/study/study",
     "pages/resume/index",
     "pages/jobs/index",
     "pages/jobs/detail",
     "pages/interview/index",
-    "pages/profile/index"
+    "pages/profile/index",
+    "pages/academic/index",
+    "pages/level-detail/level-detail"
   ],
   "window": {
-    "navigationBarBackgroundColor": "#4A90D9",
-    "navigationBarTitleText": "AI 校园学业就业助手",
-    "navigationBarTextStyle": "white",
-    "backgroundColor": "#f5f5f5"
+    "navigationBarBackgroundColor": "#F8F9FA",
+    "navigationBarTitleText": "AI校园学业就业助手",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F8F9FA"
   },
   "tabBar": {
-    "color": "#999",
-    "selectedColor": "#4A90D9",
-    "backgroundColor": "#fff",
-    "borderStyle": "black",
+    "color": "#999999",
+    "selectedColor": "#9DB4C0",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
     "list": [
+      {
+        "pagePath": "pages/jobs-tab/jobs-tab",
+        "text": "岗位",
+        "iconPath": "images/resume.png",
+        "selectedIconPath": "images/resume-active.png"
+      },
+      {
+        "pagePath": "pages/study/study",
+        "text": "学业",
+        "iconPath": "images/academic.png",
+        "selectedIconPath": "images/academic-active.png"
+      },
       {
         "pagePath": "pages/index/index",
         "text": "首页",
         "iconPath": "images/home.png",
         "selectedIconPath": "images/home-active.png"
-      },
-      {
-        "pagePath": "pages/academic/index",
-        "text": "学业",
-        "iconPath": "images/academic.png",
-        "selectedIconPath": "images/academic-active.png"
       },
       {
         "pagePath": "pages/resume/index",

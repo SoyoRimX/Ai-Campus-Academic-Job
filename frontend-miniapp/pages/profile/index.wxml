@@ -12,7 +12,7 @@
   <block wx:if="{{isLoggedIn}}">
     <!-- 用户信息头部 -->
     <view class="profile-header">
-      <view class="header-bg"></view>
+      <view class="header-bg" style="height: 252rpx; display: block; box-sizing: border-box; left: 0rpx; top: 0rpx"></view>
       <view class="header-content">
         <view class="avatar-wrapper">
           <image class="avatar" src="{{userInfo.avatar || ''}}" mode="aspectFill" />
@@ -51,7 +51,7 @@
         </view>
       </view>
 
-      <view class="menu-item" bindtap="navigateTo" data-url="/pages/academic/index">
+      <view class="menu-item" bindtap="navigateTo" data-url="/pages/study/study">
         <view class="menu-left">
           <view class="menu-icon icon-warning">⚠️</view>
           <text class="menu-text">学业预警</text>
