@@ -59,3 +59,11 @@ export function createMatch(data: { resumeId: number; jobId: number }) {
 export function getMatches(resumeId: number) {
   return request.get(`/employ/matches/${resumeId}`)
 }
+
+export function optimizeResume(data: { studentId: number; jdText: string }) {
+  return request.post('/employ/resume/optimize', data)
+}
+
+export function applyOptimize(data: { studentId: number; acceptedSuggestions: any[] }) {
+  return request.post('/employ/resume/optimize/apply', data)
+}
