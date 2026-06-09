@@ -198,8 +198,13 @@ const chartColors = ['#818cf8', '#38bdf8', '#22c55e', '#f59e0b', '#f87171', '#a7
 onMounted(async () => {
   updateTime()
   timer = setInterval(updateTime, 1000)
+  // nextTick 仅确保 Vue DOM 更新，不等于浏览器布局计算完成。
+  // 双帧 requestAnimationFrame 确保 Grid + Flexbox 容器尺寸已确定。
   await nextTick()
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))
   initCharts()
+  // 初始化后再次 resize，兜底异步布局延迟
+  requestAnimationFrame(() => charts.forEach(c => { try { c.resize() } catch {} }))
 })
 
 onUnmounted(() => {
@@ -235,12 +240,12 @@ function initCharts() {
   if (c2.value) {
     const ch = echarts.init(c2.value)
     ch.setOption({
-      color: [chartColors[3], chartColors[4], chartColors[0]],
+      color: [chartColors[4], chartColors[3], chartColors[0]], // 红→橙→黄
       tooltip: { trigger: 'axis', backgroundColor: '#1e293b', borderColor: '#334155', textStyle: { color: '#e2e8f0' } },
-      legend: { bottom: 0, textStyle: { color: textColor, fontSize: 11 } },
-      grid: darkGrid(),
+      legend: { top: 0, textStyle: { color: textColor, fontSize: 11 } },
+      grid: { top: 35, right: 20, bottom: 20, left: 45, containLabel: true },
       xAxis: darkXAxis(['9月', '10月', '11月', '12月', '1月', '2月', '3月', '4月']),
-      yAxis: darkYAxis(),
+      yAxis: { ...darkYAxis(), min: 0 },
       series: [
         { name: '红色预警', type: 'line', smooth: true, data: [8, 12, 10, 18, 15, 9, 14, 6], areaStyle: { opacity: 0.08 } },
         { name: '橙色预警', type: 'line', smooth: true, data: [15, 18, 22, 25, 20, 16, 19, 10], areaStyle: { opacity: 0.08 } },
@@ -278,13 +283,16 @@ function initCharts() {
     const ch = echarts.init(c4.value)
     const jobs = ['前端开发', 'Java 后端', '数据分析师', 'AI 算法', '测试工程师', '产品经理', '运维工程师', 'UI 设计师', '网络安全', '嵌入式']
     const values = [185, 162, 148, 132, 115, 98, 85, 72, 60, 52]
+    // 不直接 mutate 原数组，用 toReversed() 或手动反转
+    const yLabels = [...jobs].reverse()
+    const yValues = [...values].reverse()
     ch.setOption({
       tooltip: { trigger: 'axis', backgroundColor: '#1e293b', borderColor: '#334155', textStyle: { color: '#e2e8f0' } },
-      grid: { top: 10, right: 30, bottom: 10, left: 100 },
+      grid: { top: 10, right: 40, bottom: 10, left: 10, containLabel: true },
       xAxis: { type: 'value', splitLine: { lineStyle: { color: gridColor } }, axisLabel: { color: textColor, fontSize: 10 } },
-      yAxis: { type: 'category', data: jobs.reverse(), axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: textColorBright, fontSize: 11 } },
+      yAxis: { type: 'category', data: yLabels, axisLine: { show: false }, axisTick: { show: false }, axisLabel: { color: textColorBright, fontSize: 11 } },
       series: [{
-        type: 'bar', barWidth: 14, data: values.reverse().map((v, i) => ({
+        type: 'bar', barWidth: 14, data: yValues.map((v, i) => ({
           value: v,
           itemStyle: { color: chartColors[i % chartColors.length], borderRadius: [0, 3, 3, 0] }
         })),

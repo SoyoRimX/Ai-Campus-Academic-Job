@@ -1,12 +1,127 @@
 <view class="container">
-  <!-- Empty state -->
-  <view class="empty-state" wx:if="{{!resume}}">
-    <image class="empty-icon" src="/images/empty-resume.png" mode="aspectFit"></image>
-    <text class="empty-text">还没有简历，去搜索岗位吧</text>
+  <!-- ========== 空状态：无简历 ========== -->
+  <view class="empty-state" wx:if="{{!resume && !isEditing}}">
+    <view class="empty-icon">📄</view>
+    <text class="empty-text">还没有简历</text>
+    <button class="btn-create" bindtap="startCreate">创建简历</button>
   </view>
 
-  <!-- Resume content -->
-  <view class="resume-content" wx:else>
+  <!-- ========== 编辑模式 ========== -->
+  <view class="edit-mode" wx:if="{{isEditing}}">
+    <view class="card">
+      <view class="form-item">
+        <text class="form-label">简历标题</text>
+        <input class="form-input" value="{{form.title}}" bindinput="onFieldInput" data-field="title" placeholder="如：前端开发工程师简历" maxlength="30" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">目标岗位</text>
+        <input class="form-input" value="{{form.targetJob}}" bindinput="onFieldInput" data-field="targetJob" placeholder="如：前端开发工程师" maxlength="30" />
+      </view>
+      <view class="form-item">
+        <text class="form-label">目标城市</text>
+        <input class="form-input" value="{{form.targetCity}}" bindinput="onFieldInput" data-field="targetCity" placeholder="如：深圳" maxlength="20" />
+      </view>
+    </view>
+
+    <!-- 教育背景 -->
+    <view class="card">
+      <view class="section-title">
+        <view class="title-bar"></view>
+        <text>教育背景</text>
+        <view class="section-action" bindtap="addEducation">+ 添加</view>
+      </view>
+      <block wx:for="{{form.education}}" wx:key="idx">
+        <view class="sub-card">
+          <view class="sub-card-header">
+            <text class="sub-card-index">#{{index + 1}}</text>
+            <text class="sub-card-del" bindtap="delEducation" data-idx="{{index}}">删除</text>
+          </view>
+          <view class="form-item">
+            <text class="form-label-sm">学校</text>
+            <input class="form-input" value="{{item.school}}" bindinput="onEduInput" data-idx="{{index}}" data-field="school" placeholder="学校名称" />
+          </view>
+          <view class="form-item">
+            <text class="form-label-sm">专业</text>
+            <input class="form-input" value="{{item.major}}" bindinput="onEduInput" data-idx="{{index}}" data-field="major" placeholder="专业名称" />
+          </view>
+          <view class="form-item">
+            <text class="form-label-sm">时间段</text>
+            <input class="form-input" value="{{item.period}}" bindinput="onEduInput" data-idx="{{index}}" data-field="period" placeholder="如：2020-2024" />
+          </view>
+        </view>
+      </block>
+      <view wx:if="{{!form.education.length}}" class="empty-hint">暂未添加教育背景</view>
+    </view>
+
+    <!-- 实习经历 -->
+    <view class="card">
+      <view class="section-title">
+        <view class="title-bar"></view>
+        <text>实习/项目经历</text>
+        <view class="section-action" bindtap="addInternship">+ 添加</view>
+      </view>
+      <block wx:for="{{form.internship}}" wx:key="idx">
+        <view class="sub-card">
+          <view class="sub-card-header">
+            <text class="sub-card-index">#{{index + 1}}</text>
+            <text class="sub-card-del" bindtap="delInternship" data-idx="{{index}}">删除</text>
+          </view>
+          <view class="form-item">
+            <text class="form-label-sm">公司/项目</text>
+            <input class="form-input" value="{{item.company}}" bindinput="onInternInput" data-idx="{{index}}" data-field="company" placeholder="公司或项目名称" />
+          </view>
+          <view class="form-item">
+            <text class="form-label-sm">职位/角色</text>
+            <input class="form-input" value="{{item.role}}" bindinput="onInternInput" data-idx="{{index}}" data-field="role" placeholder="如：前端实习生" />
+          </view>
+          <view class="form-item">
+            <text class="form-label-sm">时间段</text>
+            <input class="form-input" value="{{item.period}}" bindinput="onInternInput" data-idx="{{index}}" data-field="period" placeholder="如：2023.06-2023.09" />
+          </view>
+          <view class="form-item">
+            <text class="form-label-sm">工作描述</text>
+            <textarea class="form-textarea" value="{{item.desc}}" bindinput="onInternInput" data-idx="{{index}}" data-field="desc" placeholder="描述你的工作内容和成果" maxlength="200" />
+          </view>
+        </view>
+      </block>
+      <view wx:if="{{!form.internship.length}}" class="empty-hint">暂未添加实习经历</view>
+    </view>
+
+    <!-- 技能特长 -->
+    <view class="card">
+      <view class="section-title">
+        <view class="title-bar"></view>
+        <text>技能特长</text>
+      </view>
+      <view class="skills-edit-wrap">
+        <view class="skill-tag-edit" wx:for="{{form.skills}}" wx:key="idx">
+          <text>{{item}}</text>
+          <view class="skill-tag-close" bindtap="delSkill" data-idx="{{index}}">×</view>
+        </view>
+      </view>
+      <view class="skill-add-row">
+        <input class="form-input skill-input" value="{{skillInput}}" bindinput="onSkillInput" placeholder="输入技能名称，回车添加" confirm-type="done" bindconfirm="addSkill" maxlength="15" />
+      </view>
+    </view>
+
+    <!-- 自我评价 -->
+    <view class="card">
+      <view class="section-title">
+        <view class="title-bar"></view>
+        <text>自我评价</text>
+      </view>
+      <textarea class="form-textarea form-textarea-lg" value="{{form.selfIntro}}" bindinput="onFieldInput" data-field="selfIntro" placeholder="简要介绍自己，突出优势和职业目标（200字以内）" maxlength="200" />
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="btn-row">
+      <button class="btn-cancel" bindtap="cancelEdit">取消</button>
+      <button class="btn-save" bindtap="saveResume" loading="{{saving}}">保存简历</button>
+    </view>
+  </view>
+
+  <!-- ========== 查看模式 ========== -->
+  <view class="resume-content" wx:if="{{resume && !isEditing}}">
     <!-- Resume header card -->
     <view class="card resume-header">
       <view class="header-top">
@@ -63,7 +178,7 @@
     <view class="card section-card" wx:if="{{parsedContent.internship && parsedContent.internship.length}}">
       <view class="section-title">
         <view class="title-bar"></view>
-        <text>实习经历</text>
+        <text>实习/项目经历</text>
       </view>
       <view class="intern-item" wx:for="{{parsedContent.internship}}" wx:key="*this">
         <view class="intern-header">
@@ -95,9 +210,10 @@
       <text class="self-intro">{{parsedContent.selfIntro}}</text>
     </view>
 
-    <!-- AI optimize button -->
-    <view class="btn-ai" bindtap="onAIOptimize">
-      <text>AI 优化简历</text>
+    <!-- 操作按钮 -->
+    <view class="btn-row">
+      <button class="btn-edit" bindtap="startEdit">编辑简历</button>
+      <button class="btn-ai" bindtap="onAIOptimize">AI 优化</button>
     </view>
   </view>
 </view>
