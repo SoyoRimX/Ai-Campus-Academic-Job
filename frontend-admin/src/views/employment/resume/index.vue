@@ -212,7 +212,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { getResumes, generateResume, optimizeResume, applyOptimize } from '@/api/employment'
+import { getResumes, generateResume, optimizeResume, applyOptimize as applyOptimizeApi } from '@/api/employment'
 import { ElMessage } from 'element-plus'
 import PageShell from '@/components/page-shell.vue'
 import EmptyState from '@/components/empty-state.vue'
@@ -337,7 +337,7 @@ async function applyOptimize() {
   if (!accepted.length) { ElMessage.warning('请至少选择一条建议'); return }
   jdApplying.value = true
   try {
-    await applyOptimize({ studentId: jdStudentId.value!, acceptedSuggestions: accepted })
+    await applyOptimizeApi({ studentId: jdStudentId.value!, acceptedSuggestions: accepted })
     ElMessage.success(`已应用 ${accepted.length} 条建议`)
     jdDialogVisible.value = false
     fetchData()
