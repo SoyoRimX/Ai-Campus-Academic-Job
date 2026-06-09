@@ -1,0 +1,164 @@
+/* ==========================================================================
+   Design Tokens — ACAJ Admin
+   Professional + Approachable + Smart
+   ========================================================================== */
+
+:root {
+  /* ------------------------------------------------------------------
+     Color: Primary (refined indigo-blue)
+     ------------------------------------------------------------------ */
+  --color-primary-50: #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  --color-primary-500: #4f6ef7;
+  --color-primary-600: #3b56e0;
+  --color-primary-700: #2d43b8;
+  --color-primary-800: #233190;
+  --color-primary-900: #1a2368;
+
+  /* ------------------------------------------------------------------
+     Color: Semantic
+     ------------------------------------------------------------------ */
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-400: #4ade80;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-400: #f87171;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+
+  /* ------------------------------------------------------------------
+     Color: Surface & Background
+     ------------------------------------------------------------------ */
+  --color-body-bg: #f7f8fa;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f8fafc;
+  --color-surface-raised: #ffffff;
+  --color-border: #e8ecf1;
+  --color-border-light: #f1f3f6;
+
+  /* ------------------------------------------------------------------
+     Color: Sidebar
+     ------------------------------------------------------------------ */
+  --color-sidebar-bg: #1a2235;
+  --color-sidebar-bg-hover: #232d42;
+  --color-sidebar-bg-active: rgba(79, 110, 247, 0.15);
+  --color-sidebar-text: #94a3b8;
+  --color-sidebar-text-hover: #cbd5e1;
+  --color-sidebar-text-active: #ffffff;
+  --color-sidebar-divider: rgba(255, 255, 255, 0.06);
+  --color-sidebar-logo-text: #ffffff;
+
+  /* ------------------------------------------------------------------
+     Color: Text
+     ------------------------------------------------------------------ */
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #64748b;
+  --color-text-placeholder: #94a3b8;
+  --color-text-disabled: #cbd5e1;
+  --color-text-inverse: #ffffff;
+  --color-text-link: var(--color-primary-600);
+
+  /* ------------------------------------------------------------------
+     Typography: Font Family
+     ------------------------------------------------------------------ */
+  --font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', system-ui, -apple-system, sans-serif;
+  --font-family-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', 'Consolas', monospace;
+
+  /* ------------------------------------------------------------------
+     Typography: Font Size Scale (1.25 major third)
+     ------------------------------------------------------------------ */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.8125rem;  /* 13px */
+  --font-size-base: 0.875rem; /* 14px */
+  --font-size-md: 1rem;       /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+
+  /* ------------------------------------------------------------------
+     Typography: Font Weight
+     ------------------------------------------------------------------ */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ------------------------------------------------------------------
+     Typography: Line Height
+     ------------------------------------------------------------------ */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* ------------------------------------------------------------------
+     Spacing (4px base)
+     ------------------------------------------------------------------ */
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+
+  /* ------------------------------------------------------------------
+     Border Radius
+     ------------------------------------------------------------------ */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* ------------------------------------------------------------------
+     Shadows
+     ------------------------------------------------------------------ */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 32px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.10);
+  --shadow-sidebar: 1px 0 0 0 rgba(0, 0, 0, 0.06);
+
+  /* ------------------------------------------------------------------
+     Transitions
+     ------------------------------------------------------------------ */
+  --transition-fast: 120ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ------------------------------------------------------------------
+     Z-Index Scale
+     ------------------------------------------------------------------ */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-toast: 1060;
+  --z-tooltip: 1070;
+
+  /* ------------------------------------------------------------------
+     Layout
+     ------------------------------------------------------------------ */
+  --sidebar-width: 240px;
+  --sidebar-width-collapsed: 64px;
+  --header-height: 56px;
+  --content-max-width: 1400px;
+}

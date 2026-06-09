@@ -1,81 +1,104 @@
 <template>
-  <div>
-    <el-page-header @back="$router.back()" content="学生详情" style="margin-bottom:20px" />
+  <div class="student-detail">
+    <el-page-header @back="$router.back()" class="detail-header">
+      <template #content>
+        <span class="header-title">学生详情</span>
+      </template>
+      <template #extra>
+        <span class="header-subtitle">{{ student.studentNo }} · {{ student.realName }}</span>
+      </template>
+    </el-page-header>
 
     <el-row :gutter="20">
+      <!-- Left: Basic info -->
       <el-col :span="8">
-        <el-card>
-          <template #header>基本信息</template>
+        <el-card shadow="never" class="info-card">
+          <template #header>
+            <div class="card-title">基本信息</div>
+          </template>
           <el-descriptions :column="1" border size="small">
-            <el-descriptions-item label="学号">{{ student.studentNo }}</el-descriptions-item>
-            <el-descriptions-item label="姓名">{{ student.realName }}</el-descriptions-item>
-            <el-descriptions-item label="专业">{{ student.major }}</el-descriptions-item>
-            <el-descriptions-item label="年级">{{ student.grade }}</el-descriptions-item>
-            <el-descriptions-item label="班级">{{ student.className }}</el-descriptions-item>
-            <el-descriptions-item label="辅导员">{{ student.advisor }}</el-descriptions-item>
-            <el-descriptions-item label="入学年份">{{ student.enrollmentYear }}</el-descriptions-item>
+            <el-descriptions-item label="学号">{{ student.studentNo || '—' }}</el-descriptions-item>
+            <el-descriptions-item label="姓名">{{ student.realName || '—' }}</el-descriptions-item>
+            <el-descriptions-item label="专业">{{ student.major || '—' }}</el-descriptions-item>
+            <el-descriptions-item label="年级">{{ student.grade || '—' }}</el-descriptions-item>
+            <el-descriptions-item label="班级">{{ student.className || '—' }}</el-descriptions-item>
+            <el-descriptions-item label="辅导员">{{ student.advisor || '—' }}</el-descriptions-item>
+            <el-descriptions-item label="入学年份">{{ student.enrollmentYear || '—' }}</el-descriptions-item>
           </el-descriptions>
         </el-card>
       </el-col>
 
+      <!-- Right: Academic overview + grades + warnings -->
       <el-col :span="16">
-        <el-card>
-          <template #header>学业概况</template>
-          <el-row :gutter="20">
-            <el-col :span="8">
-              <div class="stat-card">
-                <div class="stat-value" style="color:#409EFF">{{ student.gpa }}</div>
-                <div class="stat-label">GPA</div>
-              </div>
-            </el-col>
-            <el-col :span="8">
-              <div class="stat-card">
-                <div class="stat-value" style="color:#67C23A">{{ student.totalCredits }}/{{ student.requiredCredits }}</div>
-                <div class="stat-label">已修/应修学分</div>
-              </div>
-            </el-col>
-            <el-col :span="8">
-              <div class="stat-card">
-                <div class="stat-value" :style="{ color: student.failCount > 0 ? '#F56C6C' : '#67C23A' }">{{ student.failCount }}</div>
-                <div class="stat-label">不及格科目</div>
-              </div>
-            </el-col>
-          </el-row>
-        </el-card>
+        <!-- Stats -->
+        <div class="stats-row">
+          <StatCard
+            icon="DataLine"
+            label="GPA"
+            :value="student.gpa ?? '—'"
+            icon-bg="var(--color-primary-50)"
+            icon-color="var(--color-primary-500)"
+          />
+          <StatCard
+            icon="DocumentChecked"
+            :label="'已修 / 应修学分'"
+            :value="student.totalCredits ?? '—'"
+            :suffix="student.requiredCredits ? ' / ' + student.requiredCredits : ''"
+            icon-bg="var(--color-success-50)"
+            icon-color="var(--color-success-500)"
+          />
+          <StatCard
+            icon="WarningFilled"
+            label="不及格科目"
+            :value="student.failCount ?? 0"
+            :value-color="student.failCount > 0 ? 'var(--color-danger-500)' : 'var(--color-success-500)'"
+            icon-bg="var(--color-danger-50)"
+            icon-color="var(--color-danger-500)"
+          />
+        </div>
 
-        <el-card style="margin-top:16px">
-          <template #header>成绩记录</template>
-          <el-table :data="grades" v-loading="gradesLoading" size="small" empty-text="暂无成绩">
-            <el-table-column prop="courseName" label="课程" />
+        <!-- Grades -->
+        <el-card shadow="never" class="section-card">
+          <template #header>
+            <div class="card-title">成绩记录</div>
+          </template>
+          <el-table v-if="grades.length" :data="grades" size="small" stripe>
+            <el-table-column prop="courseName" label="课程" min-width="140" show-overflow-tooltip />
             <el-table-column prop="semester" label="学期" width="140" />
             <el-table-column prop="score" label="分数" width="80" />
             <el-table-column prop="gradePoint" label="绩点" width="80" />
             <el-table-column prop="passed" label="通过" width="80">
               <template #default="{ row }">
-                <el-tag :type="row.passed ? 'success' : 'danger'" size="small">{{ row.passed ? '是' : '否' }}</el-tag>
+                <el-tag :type="row.passed ? 'success' : 'danger'" size="small" effect="plain">
+                  {{ row.passed ? '是' : '否' }}
+                </el-tag>
               </template>
             </el-table-column>
             <el-table-column prop="examType" label="考试类型" width="100">
               <template #default="{ row }">
-                {{ examTypeMap[row.examType] || '-' }}
+                {{ examTypeMap[row.examType] || '—' }}
               </template>
             </el-table-column>
           </el-table>
+          <EmptyState v-else icon="Document" title="暂无成绩记录" />
         </el-card>
 
-        <el-card style="margin-top:16px">
-          <template #header>预警记录</template>
-          <el-table :data="warnings" v-loading="warningsLoading" size="small" empty-text="暂无预警">
-            <el-table-column prop="title" label="标题" min-width="200" />
+        <!-- Warnings -->
+        <el-card shadow="never" class="section-card">
+          <template #header>
+            <div class="card-title">预警记录</div>
+          </template>
+          <el-table v-if="warnings.length" :data="warnings" size="small" stripe>
+            <el-table-column prop="title" label="标题" min-width="200" show-overflow-tooltip />
             <el-table-column prop="warningType" label="类型" width="100">
               <template #default="{ row }">
-                {{ warningTypeMap[row.warningType] }}
+                {{ warningTypeMap[row.warningType] || '—' }}
               </template>
             </el-table-column>
             <el-table-column prop="warningLevel" label="等级" width="80">
               <template #default="{ row }">
-                <el-tag :type="row.warningLevel === 3 ? 'danger' : row.warningLevel === 2 ? 'warning' : ''" size="small">
-                  {{ ['','黄色','橙色','红色'][row.warningLevel] }}
+                <el-tag :type="row.warningLevel === 3 ? 'danger' : row.warningLevel === 2 ? 'warning' : ''" size="small" effect="dark">
+                  {{ ['', '黄色', '橙色', '红色'][row.warningLevel] || '—' }}
                 </el-tag>
               </template>
             </el-table-column>
@@ -84,6 +107,7 @@
             </el-table-column>
             <el-table-column prop="createTime" label="时间" width="180" />
           </el-table>
+          <EmptyState v-else icon="Warning" title="暂无预警记录" description="该学生当前没有任何学业预警" />
         </el-card>
       </el-col>
     </el-row>
@@ -94,6 +118,8 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { getStudent, getWarnings } from '@/api/academic'
+import StatCard from '@/components/stat-card.vue'
+import EmptyState from '@/components/empty-state.vue'
 
 const route = useRoute()
 const studentId = Number(route.params.id)
@@ -101,38 +127,72 @@ const studentId = Number(route.params.id)
 const student = ref<any>({})
 const grades = ref<any[]>([])
 const warnings = ref<any[]>([])
-const gradesLoading = ref(false)
-const warningsLoading = ref(false)
 
 const examTypeMap: Record<number, string> = { 1: '正考', 2: '补考', 3: '重修' }
 const warningTypeMap: Record<number, string> = { 1: '挂科预警', 2: '绩点预警', 3: '学分预警', 4: '出勤预警' }
 
 onMounted(async () => {
   const res = await getStudent(studentId)
-  student.value = res.data
+  student.value = res.data || {}
+  grades.value = student.value.grades || []
 
-  warningsLoading.value = true
   try {
     const wRes = await getWarnings({ page: 1, size: 100, studentId })
     warnings.value = wRes.data?.records || []
-  } finally {
-    warningsLoading.value = false
-  }
+  } catch { warnings.value = [] }
 })
 </script>
 
 <style scoped>
-.stat-card {
-  text-align: center;
-  padding: 20px 0;
+.student-detail {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
 }
-.stat-value {
-  font-size: 32px;
-  font-weight: bold;
+
+.detail-header {
+  margin-bottom: var(--space-5);
 }
-.stat-label {
-  font-size: 13px;
-  color: #909399;
-  margin-top: 8px;
+
+.detail-header :deep(.el-page-header__content) {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.header-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.info-card,
+.section-card {
+  border: 1px solid var(--color-border);
+  margin-bottom: var(--space-4);
+}
+
+.info-card :deep(.el-card__body) {
+  padding: var(--space-3) var(--space-5) var(--space-5);
+}
+
+.section-card :deep(.el-card__body) {
+  padding: 0;
+}
+
+.card-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 960px) {
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

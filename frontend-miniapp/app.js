@@ -12,6 +12,16 @@ App({
       this.globalData.token = token
       this.fetchUserInfo()
     }
+    // 无 token 时，由各页面自行判断是否需要跳转登录页
+  },
+
+  /** 检查登录状态，未登录则跳转登录页 */
+  requireLogin() {
+    if (!this.globalData.token) {
+      wx.redirectTo({ url: '/pages/login/index' })
+      return false
+    }
+    return true
   },
 
   fetchUserInfo() {
@@ -41,7 +51,9 @@ App({
             resolve(res.data)
           } else if (res.data.code === 401) {
             wx.removeStorageSync('token')
-            wx.redirectTo({ url: '/pages/index/index' })
+            this.globalData.token = ''
+            // 401 时跳转登录页重新授权
+            wx.redirectTo({ url: '/pages/login/index' })
             reject(res.data)
           } else {
             wx.showToast({ title: res.data.message || '请求失败', icon: 'none' })
@@ -73,7 +85,8 @@ App({
               resolve(data)
             } else if (data.code === 401) {
               wx.removeStorageSync('token')
-              wx.redirectTo({ url: '/pages/index/index' })
+              this.globalData.token = ''
+              wx.redirectTo({ url: '/pages/login/index' })
               reject(data)
             } else {
               wx.showToast({ title: data.message || '上传失败', icon: 'none' })

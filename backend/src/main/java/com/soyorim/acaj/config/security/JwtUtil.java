@@ -16,12 +16,16 @@ public class JwtUtil {
     private final SecretKey key;
     private final long expiration;
 
+    /** 临时 token 有效期：5分钟 */
+    private static final long TEMP_EXPIRATION = 5 * 60 * 1000;
+
     public JwtUtil(@Value("${jwt.secret}") String secret,
                    @Value("${jwt.expiration}") long expiration) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expiration = expiration;
     }
 
+    /** 生成正式 JWT token */
     public String generateToken(Long userId, String username, Map<String, Object> claims) {
         Date now = new Date();
         return Jwts.builder()
@@ -32,6 +36,36 @@ public class JwtUtil {
                 .expiration(new Date(now.getTime() + expiration))
                 .signWith(key)
                 .compact();
+    }
+
+    /**
+     * 生成临时 token（用于未绑定学号的微信用户）
+     * openid 存入 subject，额外声明 temp=true，有效期仅 5 分钟
+     */
+    public String generateTempToken(String openid) {
+        Date now = new Date();
+        return Jwts.builder()
+                .subject(openid)
+                .claim("temp", true)
+                .issuedAt(now)
+                .expiration(new Date(now.getTime() + TEMP_EXPIRATION))
+                .signWith(key)
+                .compact();
+    }
+
+    /** 判断是否为临时 token（未绑定学号） */
+    public boolean isTempToken(String token) {
+        try {
+            Boolean temp = parseToken(token).get("temp", Boolean.class);
+            return Boolean.TRUE.equals(temp);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /** 从临时 token 中获取 openid */
+    public String getOpenid(String token) {
+        return parseToken(token).getSubject();
     }
 
     public Claims parseToken(String token) {

@@ -33,6 +33,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         String token = header.substring(7);
+
+        // 临时 token 跳过解析（由具体 Controller 自行校验）
+        if (jwtUtil.isTempToken(token)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         if (!jwtUtil.validate(token)) {
             chain.doFilter(request, response);
             return;

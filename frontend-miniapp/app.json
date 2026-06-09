@@ -9,7 +9,9 @@
     "pages/interview/index",
     "pages/profile/index",
     "pages/academic/index",
-    "pages/level-detail/level-detail"
+    "pages/level-detail/level-detail",
+    "pages/login/index",
+    "pages/bind/index"
   ],
   "window": {
     "navigationBarBackgroundColor": "#F8F9FA",

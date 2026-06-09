@@ -1,0 +1,51 @@
+<view class="bind-container">
+  <view class="header-area">
+    <view class="header-icon">🔐</view>
+    <view class="header-title">绑定学号</view>
+    <view class="header-desc">请输入您的学号和密码完成绑定</view>
+  </view>
+
+  <view class="form-card">
+    <!-- 学号 -->
+    <view class="form-item">
+      <view class="form-label">学号</view>
+      <input
+        class="form-input"
+        type="text"
+        value="{{studentId}}"
+        bindinput="onStudentIdInput"
+        placeholder="请输入学号"
+        maxlength="20"
+      />
+    </view>
+
+    <!-- 密码 -->
+    <view class="form-item">
+      <view class="form-label">密码</view>
+      <input
+        class="form-input"
+        type="text"
+        password="{{true}}"
+        value="{{password}}"
+        bindinput="onPasswordInput"
+        placeholder="请输入教务系统密码"
+        maxlength="20"
+      />
+    </view>
+
+    <!-- 提交按钮 -->
+    <button
+      class="submit-btn"
+      bindtap="handleBind"
+      loading="{{isLoading}}"
+      disabled="{{isLoading || !studentId || !password}}"
+    >
+      {{isLoading ? '绑定中…' : '确认绑定'}}
+    </button>
+  </view>
+
+  <!-- 返回重新登录 -->
+  <view class="back-area" bindtap="handleBack">
+    <text class="back-text">← 返回重新登录</text>
+  </view>
+</view>

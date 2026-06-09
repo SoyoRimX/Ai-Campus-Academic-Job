@@ -1,0 +1,27 @@
+<view class="login-container">
+  <view class="logo-area">
+    <view class="app-icon">🎓</view>
+    <view class="app-name">AI校园学业就业助手</view>
+    <view class="app-desc">智能学习 · 精准就业</view>
+  </view>
+
+  <view class="login-card">
+    <view class="login-tip">首次使用请先微信登录，再绑定学号</view>
+
+    <button
+      class="wx-login-btn"
+      bindtap="handleWxLogin"
+      loading="{{isLoading}}"
+      disabled="{{isLoading}}"
+    >
+      <view class="btn-content">
+        <image class="wechat-icon" src="/images/wechat.png" mode="aspectFit"></image>
+        <text>{{isLoading ? '登录中…' : '微信快捷登录'}}</text>
+      </view>
+    </button>
+
+    <view class="skip-area" bindtap="handleSkip">
+      <text class="skip-text">跳过登录，先逛逛</text>
+    </view>
+  </view>
+</view>

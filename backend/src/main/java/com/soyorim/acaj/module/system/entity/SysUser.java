@@ -16,6 +16,8 @@ public class SysUser {
     private String phone;
     private String email;
     private String avatar;
+    /** 微信openid，用于小程序登录绑定 */
+    private String openid;
     private Integer userType;
     private Integer status;
     @TableField(fill = FieldFill.INSERT)

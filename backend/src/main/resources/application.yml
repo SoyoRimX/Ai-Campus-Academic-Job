@@ -60,3 +60,9 @@ ai:
     base-url: ${AI_BASE_URL:https://ai.kingdee.com/api}
     api-key: ${AI_API_KEY:}
     model: ${AI_MODEL:default}
+
+# 微信小程序配置
+wx:
+  miniapp:
+    app-id: ${WX_APP_ID:wx98caabde4bdd6522}
+    app-secret: ${WX_APP_SECRET:}

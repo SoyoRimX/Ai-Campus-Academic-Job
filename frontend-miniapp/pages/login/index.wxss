@@ -1,0 +1,91 @@
+.login-container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #E8F4FD 0%, #FFFFFF 40%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 48rpx;
+}
+
+/* Logo 区域 */
+.logo-area {
+  margin-top: 160rpx;
+  text-align: center;
+}
+
+.app-icon {
+  font-size: 100rpx;
+  margin-bottom: 24rpx;
+}
+
+.app-name {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.app-desc {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 登录卡片 */
+.login-card {
+  width: 100%;
+  margin-top: 100rpx;
+}
+
+.login-tip {
+  text-align: center;
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 48rpx;
+}
+
+/* 微信登录按钮 */
+.wx-login-btn {
+  width: 100%;
+  height: 96rpx;
+  background: #07C160;
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.wx-login-btn::after {
+  border: none;
+}
+
+.wx-login-btn[disabled] {
+  background: #93E6B6;
+}
+
+.btn-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  font-size: 34rpx;
+  color: #fff;
+  font-weight: 500;
+}
+
+.wechat-icon {
+  width: 44rpx;
+  height: 44rpx;
+}
+
+/* 跳过登录 */
+.skip-area {
+  margin-top: 48rpx;
+  text-align: center;
+  padding: 20rpx;
+}
+
+.skip-text {
+  font-size: 28rpx;
+  color: #9DB4C0;
+}
