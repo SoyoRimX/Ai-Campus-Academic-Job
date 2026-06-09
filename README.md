@@ -18,6 +18,7 @@
 | 功能 | 说明 |
 |------|------|
 | AI 简历生成与优化 | 输入学号，AI 自动获取学生信息生成专业简历，评分与优化建议 |
+| JD 简历定向优化 | 粘贴目标 JD → AI 六阶段流水线（解析→差距→RAG→重写→审查→打包），生成可预览勾选的修改建议 |
 | 智能职位匹配 | 简历与岗位多维度匹配打分，输出匹配理由 |
 | AI 模拟面试 | 文字/语音双模式，AI 提问 → 作答 → 评分反馈 |
 | 面试记录管理 | 查看历史面试记录，展开查看详细问答 |
@@ -57,7 +58,7 @@
 │       └── module/
 │           ├── system/                    # 用户/角色/菜单 + 认证授权 + 微信登录绑定
 │           ├── academic/                  # 学生画像、预警、学习规划
-│           ├── employment/                # 简历、岗位、人岗匹配、模拟面试
+│           ├── employment/                # 简历、岗位、人岗匹配、模拟面试、JD优化
 │           └── ai/                        # AI 对话、知识库、语音识别/合成(VoiceController)
 ├── frontend-admin/                        # Vue 3 管理后台
 │   └── src/
@@ -242,6 +243,8 @@ docker-compose up -d
 | GET | /api/employ/resume/{studentId} | 登录用户（归属校验） | 查询简历 |
 | POST | /api/employ/resume | 登录用户（归属校验） | 保存/更新简历 |
 | POST | /api/employ/resume/generate | 登录用户（归属校验） | AI 生成简历 |
+| POST | /api/employ/resume/optimize | 登录用户 | JD 优化简历（六阶段流水线） |
+| POST | /api/employ/resume/optimize/apply | 登录用户 | 应用优化建议 |
 | GET | /api/employ/jobs | 公开 | 岗位列表 |
 | POST/PUT/DELETE | /api/employ/job/* | 管理员/教师 | 岗位管理 CUD |
 | POST | /api/employ/match | 登录用户（归属校验） | 人岗匹配 |
