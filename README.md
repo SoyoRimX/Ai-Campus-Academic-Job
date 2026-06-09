@@ -75,19 +75,22 @@
 │           ├── ai/                        # 知识库管理
 │           └── system/                    # 用户管理、角色管理
 ├── frontend-miniapp/                      # 微信小程序（9 个页面）
-│   ├── app.js                            # 全局请求封装（自动 401 → 登录页）
+│   ├── app.js                            # 全局：认证管理 · request 封装 · 统一导航
+│   ├── app.wxss                          # 统一设计系统：40+ CSS 令牌（色板/间距/排版/阴影）
 │   └── pages/
-│       ├── index/                        # 首页
-│       ├── login/                        # 微信快捷登录
-│       ├── bind/                         # 绑定学号
-│       ├── jobs-tab/                     # 岗位 Tab
-│       ├── jobs/                         # 岗位列表 + 详情
-│       ├── study/                        # 学业
-│       ├── resume/                       # 简历
+│       ├── index/                        # 首页（真实 API 岗位 + 预警 + 快捷入口）
+│       ├── login/                        # 微信快捷登录（wx.login → code → 后端）
+│       ├── bind/                         # 绑定学号（临时 token + 学号密码验证）
+│       ├── jobs-tab/                     # 岗位市场 Tab（搜索 + 分页 + 真实 API）
+│       ├── jobs/
+│       │   ├── index/                    # → 重定向至 jobs-tab
+│       │   └── detail/                   # 岗位详情 + 投递
+│       ├── study/                        # 学业仪表盘（GPA 环 + 学分进度 + LV 等级 + 预警）
+│       ├── resume/                       # 简历（查看/编辑/AI 优化三态切换）
 │       ├── interview/                    # AI 模拟面试（文字/语音双模式）
-│       ├── profile/                      # 我的
-│       ├── academic/                     # 学业详情
-│       └── level-detail/                 # 等级详情
+│       ├── profile/                      # 个人中心（JWT 认证 + API 统计 + 功能菜单）
+│       ├── academic/                     # → 重定向至 study
+│       └── level-detail/                 # LV 等级详情（16 级称号表）
 ├── docs/                                  # API / 架构 / 部署文档
 ├── scripts/init-db.sql                    # MySQL 初始化脚本
 ├── docker-compose.yml                     # Docker 一键部署
@@ -161,6 +164,16 @@ npm run dev
 2. 配置 AppID（`wx98caabde4bdd6522`）
 3. 设置环境变量 `WX_APP_SECRET` 为真实的微信小程序 AppSecret
 4. 小程序启动后自动检测登录状态，未登录跳转微信快捷登录 → 绑定学号
+
+### 微信小程序技术要点
+
+- 所有页面共用 `app.wxss` 中的 CSS 自定义属性，主色 `#9DB4C0`，与 PC 管理端设计令牌同源
+- 所有 API 请求通过 `app.request()` 统一封装（自动携带 JWT、401 跳转登录页、非 200 自动 toast）
+- 所有页面导航通过 `app.navigateTo()` 统一分发（自动判断 tabBar / navigateTo）
+- 简历页支持三态切换：空状态 → 编辑（动态增删教育/实习/技能）→ 查看（AI 优化）
+- AI 面试支持文字/语音双模式（RecorderManager 录音 → 后端 Cosmos 语音识别/合成）
+- 学业仪表盘包含 GPA 环形进度（Canvas）、学分进度条、LV 综合等级（学分×0.6 + GPA×0.4）
+- 个人中心接入真实 JWT 认证流程，徽章计数来自后端 API 实时查询
 
 ### Docker 部署
 
