@@ -1,212 +1,226 @@
 /*
- * ============================================
- *  AI校园学业就业助手 — 全局样式
- *  wxss 盐系低饱和配色方案
- *  间距优先使用 px 单位
- * ============================================
+ * ============================================================
+ *  ACAJ 微信小程序 — 全局设计系统
+ *  Professional + Approachable + Smart
+ *  Primary: #9DB4C0 (salt-blue) · 与 Admin 端 tokens.css 同源
+ * ============================================================
  */
 
 page {
+  /* ---- Palette ---- */
   --color-primary: #9DB4C0;
-  --color-secondary-light: #E0E5E9;
-  --color-secondary-warm: #F2EFE9;
-  --color-secondary-green: #C9D6DF;
+  --color-primary-dark: #7A9BAE;
+  --color-primary-light: #C9D6DF;
+  --color-primary-bg: #ECF3F6;
+
   --color-bg: #F8F9FA;
-  --color-text-primary: #666666;
-  --color-text-secondary: #999999;
-  --color-interactive: #B8C5D6;
-  --color-disabled: #D1D5DB;
-  --color-white: #FFFFFF;
-  --color-shadow: rgba(0, 0, 0, 0.05);
-  --radius-sm: 8px;
-  --radius-md: 8px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
-  --spacing-xs: 8px;
-  --spacing-sm: 12px;
-  --spacing-md: 16px;
-  --spacing-lg: 20px;
-  --spacing-xl: 24px;
+  --color-surface: #FFFFFF;
+  --color-border: #E8ECF1;
+  --color-border-light: #F1F3F6;
+
+  --color-text: #1E293B;
+  --color-text-secondary: #64748B;
+  --color-text-muted: #94A3B8;
+
+  --color-success: #22C55E;
+  --color-success-bg: #F0FDF4;
+  --color-warning: #F59E0B;
+  --color-warning-bg: #FFFBEB;
+  --color-danger: #EF4444;
+  --color-danger-bg: #FEF2F2;
+
+  /* ---- Spacing ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* ---- Typography ---- */
   --font-xs: 12px;
   --font-sm: 13px;
   --font-base: 14px;
   --font-md: 16px;
   --font-lg: 18px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-  color: var(--color-text-primary);
+  --font-xl: 20px;
+  --font-2xl: 24px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height: 1.5;
+
+  /* ---- Radius ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* ---- Shadows ---- */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 2px 10px rgba(0,0,0,0.05);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.08);
+
+  /* ---- Transitions ---- */
+  --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+
+  /* ---- Layout ---- */
+  --tab-bar-height: 50px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* ---- Apply defaults ---- */
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+  font-size: var(--font-base);
+  line-height: var(--line-height);
+  color: var(--color-text);
   background-color: var(--color-bg);
-  font-size: var(--font-base);
-  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ========================================
-   通用弹性布局
-   ======================================== */
-.flex-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
+/* ============================================================
+   Utility classes
+   ============================================================ */
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-1 { flex: 1; min-width: 0; }
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
 
-.flex-col {
-  display: flex;
-  flex-direction: column;
-}
+.text-xs { font-size: var(--font-xs); }
+.text-sm { font-size: var(--font-sm); }
+.text-base { font-size: var(--font-base); }
+.text-md { font-size: var(--font-md); }
+.text-lg { font-size: var(--font-lg); }
+.text-muted { color: var(--color-text-secondary); }
+.text-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.text-center { text-align: center; }
+.font-medium { font-weight: var(--font-weight-medium); }
+.font-semibold { font-weight: var(--font-weight-semibold); }
+.font-bold { font-weight: var(--font-weight-bold); }
 
-.flex-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+/* ============================================================
+   Shared component classes (used across pages)
+   ============================================================ */
 
-.flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.flex-1 {
-  flex: 1;
-}
-
-/* ========================================
-   通用卡片样式
-   ======================================== */
+/* Card */
 .card {
-  background-color: var(--color-white);
-  border-radius: var(--radius-md);
-  box-shadow: 0 2px 10px var(--color-shadow);
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
-}
-
-.card-hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-}
-
-/*
- * 毛玻璃兼容说明：
- * backdrop-filter 在 iOS 微信（基础库 ≥ 2.9.0）原生支持；
- * Android 部分机型不生效，此时半透明 rgba 背景作为降级方案。
- */
-.frost-glass {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(157, 180, 192, 0.12);
-}
-
-/* ========================================
-   通用文字样式
-   ======================================== */
-.text-primary {
-  color: var(--color-text-primary);
-  font-size: var(--font-base);
-}
-
-.text-secondary {
-  color: var(--color-text-secondary);
-  font-size: var(--font-sm);
-}
-
-.text-ellipsis {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.text-center {
-  text-align: center;
+/* Section header */
+.section-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-4) var(--space-3);
+}
+.section-title {
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
 }
 
-/* ========================================
-   通用标签
-   ======================================== */
+/* List item */
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border-light);
+}
+.list-item:last-child { border-bottom: none; }
+
+/* Tag / Badge */
 .tag {
   display: inline-flex;
   align-items: center;
   padding: 2px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   font-size: var(--font-xs);
-  white-space: nowrap;
+  font-weight: var(--font-weight-medium);
 }
+.tag-primary { background: var(--color-primary-bg); color: var(--color-primary-dark); }
+.tag-success { background: var(--color-success-bg); color: var(--color-success); }
+.tag-warning { background: var(--color-warning-bg); color: var(--color-warning); }
+.tag-danger { background: var(--color-danger-bg); color: var(--color-danger); }
 
-.tag-blue {
-  background-color: #ECF3F6;
-  color: var(--color-primary);
-}
+/* Dot indicator */
+.dot { width: 8px; height: 8px; border-radius: var(--radius-full); flex-shrink: 0; }
+.dot-red { background: var(--color-danger); }
+.dot-orange { background: #F97316; }
+.dot-yellow { background: var(--color-warning); }
+.dot-green { background: var(--color-success); }
 
-.tag-green {
-  background-color: #ECF2EB;
-  color: #8AAA8B;
-}
-
-.tag-orange {
-  background-color: #F7F1E8;
-  color: #C4A882;
-}
-
-.tag-red {
-  background-color: #F5ECEC;
-  color: #C59B9B;
-}
-
-/* ========================================
-   通用按钮
-   ======================================== */
-.btn-primary {
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  border-radius: var(--radius-md);
-  font-size: var(--font-base);
-  padding: 10px 24px;
-  text-align: center;
-  border: none;
-}
-
-.btn-primary:active {
-  background-color: var(--color-interactive);
-}
-
-/* ========================================
-   空状态
-   ======================================== */
+/* Empty state */
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: var(--space-8) var(--space-4);
 }
-
-.empty-icon {
+.empty-state-icon {
   font-size: 48px;
-  margin-bottom: var(--spacing-md);
-  opacity: 0.5;
+  margin-bottom: var(--space-3);
+  opacity: 0.4;
 }
-
-.empty-text {
+.empty-state-text {
   font-size: var(--font-base);
   color: var(--color-text-secondary);
 }
 
-/* ========================================
-   分隔线
-   ======================================== */
-.divider {
-  height: 1px;
-  background-color: var(--color-secondary-light);
-  margin: var(--spacing-md) 0;
+/* Primary button */
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 var(--space-6);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: #FFF;
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-full);
+  border: none;
+  box-shadow: 0 4px 12px rgba(157, 180, 192, 0.35);
+}
+.btn-primary::after { border: none; }
+.btn-primary:active { opacity: 0.85; }
+
+/* Secondary / outline button */
+.btn-outline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 var(--space-6);
+  background: var(--color-surface);
+  color: var(--color-primary-dark);
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-primary-light);
+}
+.btn-outline::after { border: none; }
+.btn-outline:active { background: var(--color-primary-bg); }
+
+/* Page container (padding + safe area) */
+.page {
+  min-height: 100vh;
+  padding: var(--space-4);
+  padding-bottom: calc(var(--tab-bar-height) + var(--safe-bottom) + var(--space-4));
 }
 
-/* ========================================
-   点击态复用类
-   ======================================== */
-.tappable {
-  transition: opacity 0.2s ease;
-}
-
-.tappable:active {
-  opacity: 0.8;
-}
+/* Tap feedback */
+.tappable:active { opacity: 0.7; transform: scale(0.98); transition: all var(--duration-fast) var(--ease-out); }

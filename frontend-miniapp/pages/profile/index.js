@@ -1,142 +1,119 @@
-const app = getApp()
+var app = getApp()
 
 Page({
   data: {
     isLoggedIn: false,
     userInfo: {},
-    interviewCount: 3,
-    warningCount: 1
+    userInitial: 'U',
+    roleLabel: '学生',
+    resumeStatus: '—',
+    interviewCount: 0,
+    warningCount: 0,
+    jobCount: 0
   },
 
   onShow() {
-    this.checkLoginState()
-    this.loadCounts()
+    this.refresh()
   },
 
-  // === 检查登录状态 ===
-  checkLoginState() {
-    const token = app.globalData.token
-    const userInfo = app.globalData.userInfo
+  refresh() {
+    var token = app.globalData.token
+    var info = app.globalData.userInfo
 
-    if (token && userInfo) {
+    if (token && info) {
       this.setData({
         isLoggedIn: true,
-        userInfo: userInfo
+        userInfo: info,
+        userInitial: (info.realName || info.username || 'U').charAt(0).toUpperCase(),
+        roleLabel: this.getRoleLabel(info.userType)
       })
+      this.loadCounts()
     } else if (token) {
-      // 有 token 但没有 userInfo，尝试获取
       app.fetchUserInfo()
-      this.setData({ isLoggedIn: true })
-
-      // 轮询等待 userInfo 返回
-      let retries = 0
-      const checkInterval = setInterval(() => {
-        retries++
-        if (app.globalData.userInfo) {
-          clearInterval(checkInterval)
-          this.setData({ userInfo: app.globalData.userInfo })
-        } else if (retries > 10) {
-          clearInterval(checkInterval)
-        }
-      }, 300)
+      // 等待 userInfo 返回
+      this.waitForUserInfo()
     } else {
-      this.setData({
-        isLoggedIn: false,
-        userInfo: {}
-      })
+      this.setData({ isLoggedIn: false, userInfo: {} })
     }
   },
 
-  // === 加载 badge 数量 ===
+  waitForUserInfo() {
+    var that = this
+    var tries = 0
+    var timer = setInterval(function () {
+      tries++
+      if (app.globalData.userInfo) {
+        clearInterval(timer)
+        that.refresh()
+      } else if (tries > 15) {
+        clearInterval(timer)
+        that.setData({ isLoggedIn: false })
+      }
+    }, 300)
+  },
+
+  getRoleLabel(userType) {
+    if (userType === 2) return '管理员'
+    if (userType === 1) return '教师'
+    return '学生'
+  },
+
+  /* ---- 数据统计 ---- */
   loadCounts() {
-    // 硬编码：面试记录 3，学业预警 1
-    this.setData({
-      interviewCount: 3,
-      warningCount: 1
-    })
+    // 简历状态
+    app.request('/employ/resume/' + (app.globalData.userInfo.studentId || 1), 'GET')
+      .then(function (res) { if (res.data) this.setData({ resumeStatus: '已创建' }) }.bind(this))
+      .catch(function () { this.setData({ resumeStatus: '未创建' }) }.bind(this))
+
+    // 面试记录数
+    app.request('/employ/interviews', 'GET', { page: 1, size: 1 })
+      .then(function (res) { this.setData({ interviewCount: res.data && res.data.total || 0 }) }.bind(this))
+      .catch(function () {})
+
+    // 学业预警数
+    app.request('/academic/warnings', 'GET', { page: 1, size: 1 })
+      .then(function (res) { this.setData({ warningCount: res.data && res.data.total || 0 }) }.bind(this))
+      .catch(function () {})
+
+    // 岗位数
+    app.request('/employ/jobs', 'GET', { page: 1, size: 1 })
+      .then(function (res) { this.setData({ jobCount: res.data && res.data.total || 0 }) }.bind(this))
+      .catch(function () {})
   },
 
-  // === 页面导航 ===
-  navigateTo(e) {
-    const url = e.currentTarget.dataset.url
-    if (!url) return
-    /* tabBar 页面使用 switchTab，其他页面使用 navigateTo */
-    if (url.indexOf('/pages/study/study') === 0 ||
-        url.indexOf('/pages/resume/index') === 0 ||
-        url.indexOf('/pages/jobs/index') === 0) {
-      wx.switchTab({ url })
-    } else {
-      wx.navigateTo({ url })
-    }
+  /* ---- 导航 ---- */
+  goLogin() {
+    wx.redirectTo({ url: '/pages/login/index' })
   },
 
-  // === 联系辅导员 ===
+  goPage(e) {
+    app.navigateTo(e.currentTarget.dataset.url)
+  },
+
+  /* ---- 联系辅导员 ---- */
   contactCounselor() {
     wx.showModal({
       title: '联系辅导员',
       content: '辅导员热线: 010-12345678\n工作时间: 周一至周五 9:00-17:00',
-      showCancel: true,
-      cancelText: '关闭',
       confirmText: '拨打',
-      success: (res) => {
-        if (res.confirm) {
-          wx.makePhoneCall({ phoneNumber: '01012345678' })
-        }
+      cancelText: '关闭',
+      success: function (res) {
+        if (res.confirm) wx.makePhoneCall({ phoneNumber: '01012345678' })
       }
     })
   },
 
-  // === 微信授权登录 ===
-  handleLogin() {
-    wx.showLoading({ title: '登录中…' })
-
-    // 模拟登录流程
-    setTimeout(() => {
-      const mockToken = 'mock_token_' + Date.now()
-      const mockUserInfo = {
-        name: '张三',
-        studentNo: '20210101001',
-        major: '计算机科学与技术',
-        avatar: ''
-      }
-
-      // 存储 token
-      wx.setStorageSync('token', mockToken)
-      app.globalData.token = mockToken
-      app.globalData.userInfo = mockUserInfo
-
-      wx.hideLoading()
-      wx.showToast({ title: '登录成功', icon: 'success' })
-
-      this.setData({
-        isLoggedIn: true,
-        userInfo: mockUserInfo
-      })
-    }, 800)
-  },
-
-  // === 退出登录 ===
+  /* ---- 退出 ---- */
   handleLogout() {
     wx.showModal({
-      title: '确认退出',
+      title: '退出登录',
       content: '退出后需要重新登录，确定退出吗？',
-      success: (res) => {
-        if (res.confirm) {
-          wx.removeStorageSync('token')
-          app.globalData.token = ''
-          app.globalData.userInfo = null
-
-          this.setData({
-            isLoggedIn: false,
-            userInfo: {}
-          })
-
-          wx.showToast({ title: '已退出登录', icon: 'none' })
-
-          // 切换到首页 tab
-          wx.switchTab({ url: '/pages/index/index' })
-        }
-      }
+      success: function (res) {
+        if (!res.confirm) return
+        app.logout()
+        wx.showToast({ title: '已退出', icon: 'none' })
+        wx.switchTab({ url: '/pages/index/index' })
+      }.bind(this)
     })
   }
 })

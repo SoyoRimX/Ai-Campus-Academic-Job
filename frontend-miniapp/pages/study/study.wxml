@@ -1,97 +1,67 @@
-<!--
-  ============================================
-  AI校园学业就业助手 — 学业页
-  左中右三列 · 小GPA环
-  ============================================
--->
-<view class="study-page">
-
-  <!-- ===========================================
-      1. 顶部个人信息区：左-中-右三列对齐
-         左：头像
-         中：姓名+LV / 专业年级
-         右：GPA环形进度 + 绩点评级
-      =========================================== -->
+<view class="page study-page">
+  <!-- 学生信息卡片 -->
   <view class="student-card">
-    <!-- 左：头像 -->
-    <view class="sc-left">
-      <view class="student-avatar">
-        <text class="student-avatar-emoji">👤</text>
+    <view class="sc-avatar">{{studentInfo.name ? studentInfo.name.charAt(0) : 'U'}}</view>
+    <view class="flex-1" style="margin-left:var(--space-3);overflow:hidden">
+      <view class="flex" style="align-items:baseline;gap:var(--space-2)">
+        <text class="text-lg font-bold text-ellipsis">{{studentInfo.name || '未设置'}}</text>
+        <text class="lv-badge tappable" bindtap="onLvTap">LV.{{lvLevel}} {{lvTitle}}</text>
       </view>
+      <text class="text-sm text-muted" style="margin-top:2px">{{studentInfo.major || '—'}} · {{studentInfo.grade || '—'}}</text>
     </view>
-    <!-- 中：姓名+LV / 专业年级 -->
-    <view class="sc-center">
-      <view class="sc-center-row">
-        <text class="student-name text-ellipsis">{{studentInfo.name}}</text>
-        <text class="student-lv" bindtap="onLvTap">LV.{{lvLevel}} {{lvTitle}}</text>
+    <view class="gpa-ring-mini">
+      <canvas class="gpa-canvas" canvas-id="gpaCanvas" id="gpaCanvas"></canvas>
+      <view class="gpa-center">
+        <text class="gpa-value">{{studentInfo.gpa}}</text>
+        <text class="gpa-unit">/4.0</text>
       </view>
-      <text class="student-major text-ellipsis">{{studentInfo.major}} · {{studentInfo.grade}}</text>
-    </view>
-    <!-- 右：GPA环形进度 + 绩点评级 -->
-    <view class="sc-right">
-      <view class="sc-right-ring">
-        <canvas
-          class="gpa-small-canvas"
-          canvas-id="gpaSmallCanvas"
-          id="gpaSmallCanvas">
-        </canvas>
-        <view class="gpa-small-center">
-          <text class="gpa-small-value">{{studentInfo.gpa}}</text>
-          <text class="gpa-small-unit">/4.0</text>
-        </view>
-      </view>
-      <text class="sc-right-rating gpa-rating-text-{{gpaRatingClass}}">{{gpaRating}}</text>
     </view>
   </view>
 
-  <!-- ===========================================
-      2. 学分明细区（毛玻璃圆角）
-      =========================================== -->
-  <view class="credit-card">
-    <view class="credit-header">
-      <view class="section-title-wrap">
-        <view class="section-title-dot"></view>
-        <text class="section-title-text">学分明细</text>
-      </view>
-      <text class="credit-num">{{studentInfo.totalCredits}} / {{studentInfo.requiredCredits}}</text>
+  <!-- 学分明细 -->
+  <view class="card" style="margin-bottom:var(--space-3);padding:var(--space-4)">
+    <view class="flex-between" style="margin-bottom:var(--space-3)">
+      <text class="text-md font-semibold">学分明细</text>
+      <text class="text-base font-semibold" style="color:var(--color-primary-dark)">{{studentInfo.totalCredits}} / {{studentInfo.requiredCredits}}</text>
     </view>
-    <view class="progress-bar">
-      <view class="progress-fill" style="transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); width: {{creditPercent}}%;"></view>
+    <view class="progress-track">
+      <view class="progress-fill" style="width:{{creditPercent}}%"></view>
     </view>
-    <view class="credit-footer">
-      <text class="credit-hint">距毕业要求还需 {{remainingCredits}} 学分</text>
-      <text class="credit-percent">{{creditPercent}}%</text>
+    <view class="flex-between" style="margin-top:var(--space-2)">
+      <text class="text-xs text-muted">距毕业还需 {{remainingCredits}} 学分</text>
+      <text class="text-xs font-semibold" style="color:var(--color-primary-dark)">{{creditPercent}}%</text>
     </view>
   </view>
 
-  <!-- ===========================================
-      3. 底部数据卡片区（毛玻璃）
-      =========================================== -->
-  <view class="stats-row">
-    <view class="stat-card frost-card-sm" hover-class="card-hover">
-      <view class="stat-icon-wrap stat-icon-progress">
-        <text class="stat-icon">📊</text>
-      </view>
-      <text class="stat-title">学业进度</text>
-      <view class="stat-data">
-        <text class="stat-number">{{creditPercent}}%</text>
-        <text class="stat-unit-text">完成</text>
-      </view>
-      <text class="stat-desc">{{studentInfo.totalCredits}} / {{studentInfo.requiredCredits}} 学分</text>
+  <!-- 统计双卡 -->
+  <view class="flex gap-3" style="margin-bottom:var(--space-3)">
+    <view class="stat-card flex-1">
+      <text class="text-xs text-muted">学业进度</text>
+      <text class="text-xl font-bold" style="margin-top:var(--space-1);color:var(--color-primary-dark)">{{creditPercent}}%</text>
+      <text class="text-xs text-muted" style="margin-top:2px">{{studentInfo.totalCredits}} 学分已修</text>
     </view>
-    <view class="stat-card frost-card-sm" hover-class="card-hover">
-      <view class="stat-icon-wrap stat-icon-fail">
-        <text class="stat-icon">⚠️</text>
-      </view>
-      <text class="stat-title">不及格科目</text>
-      <view class="stat-data">
-        <text class="stat-number stat-number-fail">{{studentInfo.failCount}}</text>
-        <text class="stat-unit-text">门</text>
-      </view>
-      <text class="stat-desc stat-desc-fail">{{failStatusText}}</text>
+    <view class="stat-card flex-1">
+      <text class="text-xs text-muted">不及格科目</text>
+      <text class="text-xl font-bold" style="margin-top:var(--space-1);color:{{studentInfo.failCount > 0 ? 'var(--color-danger)' : 'var(--color-success)'}}">{{studentInfo.failCount}}</text>
+      <text class="text-xs text-muted" style="margin-top:2px">{{failStatusText}}</text>
     </view>
   </view>
 
-  <view style="height: 20px;"></view>
-
+  <!-- 学业预警 -->
+  <view class="section-hd">
+    <text class="section-title">学业预警</text>
+  </view>
+  <view class="card" wx:if="{{warnings.length}}">
+    <view class="list-item tappable" wx:for="{{warnings}}" wx:key="id">
+      <view class="dot" style="background:{{item.level === 3 ? 'var(--color-danger)' : item.level === 2 ? '#F97316' : 'var(--color-warning)'}}"></view>
+      <view class="flex-1" style="margin-left:var(--space-3)">
+        <text class="text-sm font-medium text-ellipsis">{{item.title}}</text>
+        <text class="text-xs text-muted" style="display:block;margin-top:2px">{{item.description || item.reason || ''}}</text>
+      </view>
+      <text class="text-xs text-muted">{{item.time || item.createTime || ''}}</text>
+    </view>
+  </view>
+  <view class="empty-state" wx:else>
+    <text class="empty-state-text" style="color:var(--color-success)">暂无预警，继续保持</text>
+  </view>
 </view>

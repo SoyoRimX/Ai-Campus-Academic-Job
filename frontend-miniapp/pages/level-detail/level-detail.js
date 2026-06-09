@@ -1,11 +1,3 @@
-/*
- * ============================================
- *  AI校园学业就业助手 — 等级详情页逻辑
- *  level-detail.js | 懒加载 · 卡片展示
- * ============================================
- */
-
-/* LV 等级完整配置表 */
 var LV_TABLE = [
   { level: 0,  min: 0,       max: 0.0625,  title: '初学入门' },
   { level: 1,  min: 0.0625,  max: 0.125,   title: '渐入佳境' },
@@ -36,20 +28,15 @@ Page({
   },
 
   onLoad: function (options) {
-    var that = this
     var currentLevel = Number(options.level) || 0
-    var score = options.score || '0.000'
-    var creditRaw = options.creditRaw || '0.00'
-    var gpaRaw = options.gpaRaw || '0.00'
-
     this.setData({
       currentLevel: currentLevel,
-      score: score,
-      creditRaw: creditRaw,
-      gpaRaw: gpaRaw
+      score: options.score || '0.000',
+      creditRaw: options.creditRaw || '0.00',
+      gpaRaw: options.gpaRaw || '0.00'
     })
 
-    /* 懒加载：200ms 延迟展示加载完成状态 */
+    var that = this
     setTimeout(function () {
       var list = LV_TABLE.map(function (item) {
         return {
@@ -59,10 +46,7 @@ Page({
           maxText: item.max.toFixed(4)
         }
       })
-      that.setData({
-        loading: false,
-        levelList: list
-      })
+      that.setData({ loading: false, levelList: list })
     }, 200)
   }
 })

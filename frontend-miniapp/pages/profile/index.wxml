@@ -1,91 +1,84 @@
-<view class="profile-container">
+<view class="page profile-page">
   <!-- ========== 未登录 ========== -->
-  <view class="login-state" wx:if="{{!isLoggedIn}}">
-    <view class="login-placeholder">
-      <view class="login-avatar">👤</view>
-      <view class="login-tip">登录后查看更多信息</view>
-      <button class="login-btn" bindtap="handleLogin">微信授权登录</button>
-    </view>
+  <view class="unlogged" wx:if="{{!isLoggedIn}}">
+    <view class="unlogged-avatar">🎓</view>
+    <view class="unlogged-title">AI 校园学业就业助手</view>
+    <view class="unlogged-desc">微信登录后查看学业与就业数据</view>
+    <button class="btn-primary" style="width:260px" bindtap="goLogin">微信快捷登录</button>
   </view>
 
   <!-- ========== 已登录 ========== -->
-  <block wx:if="{{isLoggedIn}}">
-    <!-- 用户信息头部 -->
-    <view class="profile-header">
-      <view class="header-bg" style="height: 252rpx; display: block; box-sizing: border-box; left: 0rpx; top: 0rpx"></view>
-      <view class="header-content">
-        <view class="avatar-wrapper">
-          <image class="avatar" src="{{userInfo.avatar || ''}}" mode="aspectFill" />
-          <view class="avatar-placeholder" wx:if="{{!userInfo.avatar}}">{{userInfo.name ? userInfo.name.charAt(0) : 'U'}}</view>
-        </view>
-        <view class="user-detail">
-          <view class="user-name">{{userInfo.name || '未设置'}}</view>
-          <view class="user-info-row">
-            <text class="user-no">学号: {{userInfo.studentNo || userInfo.studentCode || '—'}}</text>
-            <text class="user-major">{{userInfo.major || userInfo.department || '—'}}</text>
+  <block wx:else>
+    <!-- 用户卡片 -->
+    <view class="user-card">
+      <view class="user-card-bg"></view>
+      <view class="user-card-body">
+        <view class="user-avatar">{{userInitial}}</view>
+        <view class="user-info">
+          <view class="user-name">{{userInfo.realName || userInfo.username || '未命名'}}</view>
+          <view class="user-meta">
+            <text class="user-meta-item" wx:if="{{userInfo.username}}">学号 {{userInfo.username}}</text>
+            <text class="user-meta-item">{{roleLabel}}</text>
           </view>
         </view>
       </view>
     </view>
 
-    <!-- 菜单列表 -->
-    <view class="menu-list">
-      <view class="menu-item" bindtap="navigateTo" data-url="/pages/resume/index">
-        <view class="menu-left">
-          <view class="menu-icon icon-resume">📄</view>
-          <text class="menu-text">我的简历</text>
-        </view>
-        <view class="menu-right">
-          <text class="menu-arrow">›</text>
-        </view>
+    <!-- 数据概览 -->
+    <view class="stats-row">
+      <view class="stat-item" bindtap="goPage" data-url="/pages/resume/index">
+        <view class="stat-num">{{resumeStatus}}</view>
+        <view class="stat-label">我的简历</view>
       </view>
-
-      <view class="menu-item" bindtap="navigateTo" data-url="/pages/interview/index">
-        <view class="menu-left">
-          <view class="menu-icon icon-interview">🎤</view>
-          <text class="menu-text">面试记录</text>
-        </view>
-        <view class="menu-right">
-          <text class="badge" wx:if="{{interviewCount > 0}}">{{interviewCount}}</text>
-          <text class="menu-arrow">›</text>
-        </view>
+      <view class="stat-item" bindtap="goPage" data-url="/pages/interview/index">
+        <view class="stat-num">{{interviewCount}}</view>
+        <view class="stat-label">面试记录</view>
       </view>
-
-      <view class="menu-item" bindtap="navigateTo" data-url="/pages/study/study">
-        <view class="menu-left">
-          <view class="menu-icon icon-warning">⚠️</view>
-          <text class="menu-text">学业预警</text>
-        </view>
-        <view class="menu-right">
-          <text class="badge badge-warning" wx:if="{{warningCount > 0}}">{{warningCount}}</text>
-          <text class="menu-arrow">›</text>
-        </view>
+      <view class="stat-item" bindtap="goPage" data-url="/pages/study/study">
+        <view class="stat-num">{{warningCount}}</view>
+        <view class="stat-label">学业预警</view>
       </view>
-
-      <view class="menu-item" bindtap="navigateTo" data-url="/pages/jobs/index">
-        <view class="menu-left">
-          <view class="menu-icon icon-apply">📋</view>
-          <text class="menu-text">投递记录</text>
-        </view>
-        <view class="menu-right">
-          <text class="menu-arrow">›</text>
-        </view>
-      </view>
-
-      <view class="menu-item" bindtap="contactCounselor">
-        <view class="menu-left">
-          <view class="menu-icon icon-counselor">📞</view>
-          <text class="menu-text">联系辅导员</text>
-        </view>
-        <view class="menu-right">
-          <text class="menu-arrow">›</text>
-        </view>
+      <view class="stat-item" bindtap="goPage" data-url="/pages/jobs-tab/jobs-tab">
+        <view class="stat-num">{{jobCount}}</view>
+        <view class="stat-label">在招岗位</view>
       </view>
     </view>
 
-    <!-- 退出登录 -->
-    <view class="logout-section">
-      <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+    <!-- 功能菜单 -->
+    <view class="menu-card">
+      <view class="menu-item" bindtap="goPage" data-url="/pages/resume/index">
+        <view class="menu-icon-box icon-resume">📄</view>
+        <text class="menu-text">我的简历</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="goPage" data-url="/pages/interview/index">
+        <view class="menu-icon-box icon-interview">🎙</view>
+        <text class="menu-text">AI 模拟面试</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="goPage" data-url="/pages/study/study">
+        <view class="menu-icon-box icon-warning">📊</view>
+        <text class="menu-text">学业数据</text>
+        <text class="menu-arrow">›</text>
+      </view>
+      <view class="menu-item" bindtap="goPage" data-url="/pages/jobs-tab/jobs-tab">
+        <view class="menu-icon-box icon-jobs">💼</view>
+        <text class="menu-text">岗位市场</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 联系与退出 -->
+    <view class="menu-card" style="margin-top:12px">
+      <view class="menu-item" bindtap="contactCounselor">
+        <view class="menu-icon-box icon-contact">📞</view>
+        <text class="menu-text">联系辅导员</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+
+    <view class="logout-wrap">
+      <button class="btn-outline" style="width:100%" bindtap="handleLogout">退出登录</button>
     </view>
   </block>
 </view>

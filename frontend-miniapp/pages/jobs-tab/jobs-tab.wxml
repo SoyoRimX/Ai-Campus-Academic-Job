@@ -1,52 +1,44 @@
-<!--
-  ============================================
-  AI校园学业就业助手 — 岗位推荐页
-  TabBar「岗位」入口
-  从首页提取完整的岗位模块
-  ============================================
--->
-<view class="jobs-tab-page">
-
-  <!-- ===== 背景装饰层 ===== -->
-  <view class="page-bg-deco"></view>
-
-  <!-- ===== 推荐岗位模块（毛玻璃背景） ===== -->
-  <view class="section">
-    <view class="section-header">
-      <view class="section-title-wrap">
-        <view class="section-title-dot"></view>
-        <text class="section-title-text">推荐岗位</text>
-      </view>
-      <text class="section-more tappable"
-            bindtap="navigateTo"
-            data-url="/pages/jobs/index">查看全部 ›</text>
-    </view>
-    <view class="frost-card job-list" wx:if="{{jobs.length > 0}}">
-      <view class="job-item tappable"
-            wx:for="{{jobs}}"
-            wx:key="id"
-            hover-class="job-hover"
-            bindtap="navigateTo"
-            data-url="/pages/jobs/detail?id={{item.id}}">
-        <!-- 公文包图标 -->
-        <text class="job-briefcase">💼</text>
-        <view class="job-item-left">
-          <text class="job-item-name text-ellipsis">{{item.title}}</text>
-          <text class="job-item-company text-ellipsis" style="position: relative; left: 36rpx; top: 1rpx">{{item.company}} · {{item.location}}</text>
-        </view>
-        <view class="job-item-right">
-          <text class="job-item-salary">{{item.salary}}</text>
-          <text class="job-item-date">{{item.date}}</text>
-        </view>
-      </view>
-    </view>
-    <view class="empty-state" wx:else>
-      <text class="empty-icon">📭</text>
-      <text class="empty-text">暂无推荐岗位</text>
+<view class="page jobs-tab-page">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input class="search-input" value="{{keyword}}" bindinput="onSearchInput" bindconfirm="onSearch" placeholder="搜索岗位、公司或技能" confirm-type="search" />
+      <text class="search-clear tappable" wx:if="{{keyword}}" bindtap="clearSearch">✕</text>
     </view>
   </view>
 
-  <!-- 底部安全距离 -->
-  <view style="height: 20px;"></view>
+  <!-- 岗位列表 -->
+  <view class="section" wx:if="{{jobs.length}}">
+    <view class="section-hd">
+      <text class="section-title">{{keyword ? '搜索结果' : '全部岗位'}}</text>
+      <text class="text-xs text-muted">共 {{total}} 个</text>
+    </view>
 
+    <view class="card">
+      <view class="list-item tappable" wx:for="{{jobs}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
+        <view class="job-avatar">💼</view>
+        <view class="flex-1" style="margin-left:var(--space-3)">
+          <view class="text-base font-semibold text-ellipsis">{{item.jobTitle || item.title || item.name}}</view>
+          <view class="flex gap-2" style="margin-top:6px;flex-wrap:wrap">
+            <text class="text-xs text-muted">{{item.company || item.companyName || '—'}}</text>
+            <text class="text-xs text-muted" wx:if="{{item.city || item.location}}">· {{item.city || item.location}}</text>
+            <view class="tag tag-primary" wx:if="{{item.jobType || item.type}}">{{item.jobType || item.type}}</view>
+          </view>
+        </view>
+        <text class="text-md font-bold" style="color:var(--color-primary-dark);white-space:nowrap">{{item.salary || item.salaryRange || '面议'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <view class="empty-state-icon">🔎</view>
+    <view class="empty-state-text">{{keyword ? '未找到匹配岗位' : '暂无岗位信息'}}</view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{hasMore}}">
+    <text class="text-sm text-muted tappable" bindtap="loadMore">加载更多</text>
+  </view>
 </view>

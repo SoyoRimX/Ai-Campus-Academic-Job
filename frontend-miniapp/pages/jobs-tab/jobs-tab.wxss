@@ -1,141 +1,19 @@
-/*
- * ============================================
- *  AI校园学业就业助手 — 岗位推荐页样式
- *  TabBar「岗位」入口 · 毛玻璃 · 盐系
- * ============================================
- */
+.jobs-tab-page { padding-top: 0; }
 
-.jobs-tab-page {
-  position: relative;
-  min-height: 100vh;
-  background-color: #F8F9FA;
-  z-index: 1;
+.search-bar { padding: var(--space-3) var(--space-4); background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
+.search-input-wrap {
+  display: flex; align-items: center; gap: var(--space-2);
+  background: var(--color-bg); border-radius: var(--radius-full);
+  padding: 0 var(--space-4); height: 40px;
 }
-
-/* 背景装饰层（毛玻璃需要下层模糊源） */
-.page-bg-deco {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background:
-    radial-gradient(ellipse at 30% 30%, rgba(157, 180, 192, 0.10) 0%, transparent 60%),
-    radial-gradient(ellipse at 70% 80%, rgba(201, 214, 223, 0.08) 0%, transparent 60%);
-  pointer-events: none;
-  z-index: 0;
+.search-icon { font-size: 14px; opacity: 0.5; flex-shrink: 0; }
+.search-input { flex: 1; font-size: var(--font-base); color: var(--color-text); }
+.search-clear { font-size: 14px; color: var(--color-text-muted); padding: var(--space-1); }
+.section { padding: 0 var(--space-4); margin-top: var(--space-3); }
+.job-avatar {
+  width: 44px; height: 44px; border-radius: var(--radius-md);
+  background: var(--color-primary-bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
 }
-
-/* ===== 公用区块布局 ===== */
-.section {
-  padding: 16px;
-  margin-bottom: 20px;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.section-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.section-title-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #9DB4C0;
-}
-
-.section-title-text {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333333;
-}
-
-.section-more {
-  font-size: 12px;
-  color: #9DB4C0;
-}
-
-/* ===== 毛玻璃卡片 ===== */
-.frost-card {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(157, 180, 192, 0.12);
-  overflow: hidden;
-}
-
-/* ===== 岗位列表 ===== */
-.job-item {
-  display: flex;
-  align-items: center;
-  padding: 14px 14px;
-  border-bottom: 1px solid rgba(224, 229, 233, 0.5);
-  gap: 10px;
-}
-
-.job-item:last-child {
-  border-bottom: none;
-}
-
-.job-hover {
-  background-color: rgba(157, 180, 192, 0.06);
-}
-
-.job-briefcase {
-  font-size: 20px;
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #ECF3F6;
-  border-radius: 8px;
-}
-
-.job-item-left {
-  flex: 1;
-  overflow: hidden;
-}
-
-.job-item-name {
-  font-size: 14px;
-  color: #333333;
-  font-weight: 500;
-  margin-bottom: 3px;
-}
-
-.job-item-company {
-  font-size: 12px;
-  color: #999999;
-}
-
-.job-item-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 3px;
-  flex-shrink: 0;
-}
-
-.job-item-salary {
-  font-size: 14px;
-  color: #C59B9B;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.job-item-date {
-  font-size: 11px;
-  color: #D1D5DB;
-}
+.load-more { padding: var(--space-4); text-align: center; }

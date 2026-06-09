@@ -1,57 +1,58 @@
-/*
- * ============================================
- *  AI校园学业就业助手 — 岗位推荐页逻辑
- *  TabBar「岗位」入口
- * ============================================
- */
+var app = getApp()
 
 Page({
   data: {
-    jobs: []
+    keyword: '',
+    jobs: [],
+    total: 0,
+    page: 1,
+    hasMore: false
   },
 
-  onLoad() {
-    this.loadJobs()
+  onLoad() { this.fetchJobs() },
+
+  onShow() {
+    if (this.data.jobs.length === 0) this.fetchJobs()
   },
 
-  loadJobs() {
-    this.setData({
-      jobs: [
-        {
-          id: 1, title: '前端开发实习生',
-          company: '字节跳动', location: '北京',
-          salary: '200-300/天', date: '05-22'
-        },
-        {
-          id: 2, title: 'Java开发工程师',
-          company: '阿里巴巴', location: '杭州',
-          salary: '18-25K', date: '05-21'
-        },
-        {
-          id: 3, title: '数据分析师',
-          company: '腾讯', location: '深圳',
-          salary: '15-22K', date: '05-20'
-        },
-        {
-          id: 4, title: '产品经理实习生',
-          company: '美团', location: '上海',
-          salary: '180-280/天', date: '05-19'
-        }
-      ]
-    })
+  fetchJobs() {
+    var that = this
+    app.request('/employ/jobs', 'GET', { page: 1, size: 15, keyword: this.data.keyword || undefined })
+      .then(function (res) {
+        var records = (res.data && res.data.records) || []
+        that.setData({
+          jobs: records,
+          total: res.data ? res.data.total || records.length : records.length,
+          page: 1,
+          hasMore: records.length >= 15
+        })
+      })
   },
 
-  navigateTo(e) {
-    const url = e.currentTarget.dataset.url
-    if (!url) return
+  loadMore() {
+    var that = this
+    var next = this.data.page + 1
+    app.request('/employ/jobs', 'GET', { page: next, size: 15, keyword: this.data.keyword || undefined })
+      .then(function (res) {
+        var records = (res.data && res.data.records) || []
+        that.setData({
+          jobs: that.data.jobs.concat(records),
+          page: next,
+          hasMore: records.length >= 15
+        })
+      })
+  },
 
-    /* tabBar 页面使用 switchTab，详情页使用 navigateTo */
-    const tabPages = ['/pages/jobs-tab/', '/pages/study/', '/pages/index/', '/pages/resume/', '/pages/profile/']
-    const isTab = tabPages.some(path => url.indexOf(path) === 0)
-    if (isTab) {
-      wx.switchTab({ url })
-    } else {
-      wx.navigateTo({ url })
-    }
+  onSearchInput(e) { this.setData({ keyword: e.detail.value }) },
+
+  onSearch() { this.fetchJobs() },
+
+  clearSearch() {
+    this.setData({ keyword: '' })
+    this.fetchJobs()
+  },
+
+  goDetail(e) {
+    wx.navigateTo({ url: '/pages/jobs/detail?id=' + e.currentTarget.dataset.id })
   }
 })

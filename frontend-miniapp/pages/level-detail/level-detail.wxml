@@ -1,63 +1,34 @@
-<!--
-  ============================================
-  AI校园学业就业助手 — 等级详情页
-  level-detail.wxml | 卡片式展示 + 返回按钮
-  ============================================
--->
-<view class="ld-page">
+<view class="page ld-page">
+  <!-- 公式说明 -->
+  <view class="card" style="padding:var(--space-4);margin-bottom:var(--space-4)">
+    <text class="text-md font-semibold" style="display:block;margin-bottom:var(--space-3)">等级计算规则</text>
+    <text class="text-sm text-muted" style="line-height:1.8">
+      综合得分 S = 学分进度 × 0.6 + 绩点进度 × 0.4
+    </text>
+    <text class="text-sm" style="display:block;margin-top:var(--space-2);color:var(--color-primary-dark);font-weight:var(--font-weight-semibold)">
+      当前：S = {{creditRaw}} × 0.6 + {{gpaRaw}} × 0.4 = {{score}}
+    </text>
+  </view>
 
-  <!-- ===== 顶部公式说明区 ===== -->
-  <view class="ld-header">
-    <view class="ld-formula-card">
-      <text class="ld-formula-title">等级计算规则</text>
-      <text class="ld-formula-desc">
-        综合得分 S = 学分进度 × 0.6 + 绩点进度 × 0.4
-      </text>
-      <text class="ld-formula-desc">
-        学分进度 = 已修学分 ÷ 总毕业学分 · 绩点进度 = 当前GPA ÷ 4.0
-      </text>
-      <view class="ld-formula-current">
-        <text class="ld-formula-sub">当前：S = {{creditRaw}} × 0.6 + {{gpaRaw}} × 0.4 = {{score}}</text>
+  <!-- 等级列表 -->
+  <text class="text-md font-semibold" style="display:block;margin-bottom:var(--space-3)">全部等级称号</text>
+
+  <view wx:if="{{loading}}" class="text-center" style="padding:40px 0">
+    <text class="text-sm text-muted">加载中…</text>
+  </view>
+
+  <view wx:else class="flex-col gap-3">
+    <view class="ld-card {{item.level === currentLevel ? 'ld-active' : ''}}" wx:for="{{levelList}}" wx:key="level">
+      <view class="ld-badge">LV.{{item.level}}</view>
+      <view class="flex-1">
+        <text class="text-base font-semibold">{{item.title}}</text>
+        <text class="text-xs text-muted" style="display:block;margin-top:2px">S ∈ [{{item.minText}}, {{item.maxText}})</text>
       </view>
-      <text class="ld-formula-hint">
-        等级提升所需经验值 = （1/16）× 综合得分范围，共16个等级节点均匀分布
-      </text>
+      <view wx:if="{{item.level === currentLevel}}" class="flex gap-1" style="align-items:center">
+        <view class="dot" style="background:var(--color-primary-dark)"></view>
+        <text class="text-xs font-semibold" style="color:var(--color-primary-dark)">当前</text>
+      </view>
+      <text wx:elif="{{item.level < currentLevel}}" class="text-md" style="color:var(--color-success)">✓</text>
     </view>
   </view>
-
-  <!-- ===== 等级称号列表 ===== -->
-  <view class="ld-list-title">
-    <text class="ld-list-title-text">全部等级称号</text>
-  </view>
-
-  <view class="ld-loading" wx:if="{{loading}}">
-    <text class="ld-loading-text">加载中...</text>
-  </view>
-
-  <view class="ld-list" wx:else>
-    <view
-      class="ld-card {{item.level === currentLevel ? 'ld-card-active' : ''}}"
-      wx:for="{{levelList}}"
-      wx:key="level">
-      <view class="ld-card-badge">
-        <text class="ld-card-lv">LV.{{item.level}}</text>
-      </view>
-      <view class="ld-card-body">
-        <text class="ld-card-title">{{item.title}}</text>
-        <view class="ld-card-range">
-          <text class="ld-card-range-text">S ∈ [{{item.minText}}, {{item.maxText}})</text>
-        </view>
-      </view>
-      <view class="ld-card-status" wx:if="{{item.level === currentLevel}}">
-        <view class="ld-status-dot"></view>
-        <text class="ld-status-text">当前</text>
-      </view>
-      <view class="ld-card-check" wx:elif="{{item.level < currentLevel}}">
-        <text class="ld-check-icon">✓</text>
-      </view>
-    </view>
-  </view>
-
-  <view style="height: 20px;"></view>
-
 </view>
