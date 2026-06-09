@@ -101,7 +101,7 @@
          ================================================================ -->
     <el-dialog v-model="jdDialogVisible" :title="jdStep === 0 ? 'JD 优化简历' : jdStep === 1 ? '分析中…' : '优化建议预览'" :width="jdStep === 2 ? '760px' : '520px'" top="5vh" @closed="resetJd">
       <!-- Step 0: 输入 JD + 选择学生 -->
-      <template v-if="jdStep === 0">
+      <div v-if="jdStep === 0">
         <p class="generate-intro">粘贴目标岗位的 JD（职位描述），AI 将对比学生简历与 JD 需求，识别差距并结合知识库生成针对性修改建议。</p>
         <el-form label-width="0" style="margin-top: var(--space-4)">
           <el-form-item>
@@ -113,14 +113,10 @@
             <el-input v-model="jdText" type="textarea" :rows="8" placeholder="在此粘贴 JD 全文…&#10;&#10;示例：&#10;招聘前端开发工程师，负责Web前端架构设计与核心功能开发。要求：精通React/Vue，熟悉TypeScript，3年以上项目经验，有大型项目架构经验优先。" />
           </el-form-item>
         </el-form>
-        <template #footer>
-          <el-button @click="jdDialogVisible = false">取消</el-button>
-          <el-button type="primary" :disabled="!jdStudentId || !jdText.trim()" :loading="jdLoading" @click="startOptimize">开始分析</el-button>
-        </template>
-      </template>
+      </div>
 
       <!-- Step 1: 分析中（6 步 Stepper） -->
-      <template v-if="jdStep === 1">
+      <div v-if="jdStep === 1">
         <div class="jd-stepper">
           <div v-for="(s, i) in jdSteps" :key="i" class="jd-step" :class="{ done: i < jdStepIndex, active: i === jdStepIndex }">
             <div class="jd-step-dot">{{ i < jdStepIndex ? '✓' : i === jdStepIndex ? '●' : i + 1 }}</div>
@@ -128,11 +124,10 @@
           </div>
         </div>
         <p class="jd-progress-text">{{ jdProgressText }}</p>
-      </template>
+      </div>
 
       <!-- Step 2: 建议预览 -->
-      <template v-if="jdStep === 2 && jdResult">
-        <!-- 摘要 -->
+      <div v-if="jdStep === 2 && jdResult">
         <div class="jd-summary">
           <div class="jd-summary-item" v-if="jdResult.jdParsed">
             <strong>解析岗位：</strong>{{ jdResult.jdParsed.position }}
@@ -151,7 +146,6 @@
           </div>
         </div>
 
-        <!-- 建议列表 -->
         <div class="jd-suggestions">
           <div class="jd-suggestion-header">
             <h4>修改建议（{{ jdResult.suggestions?.length || 0 }} 条）</h4>
@@ -189,7 +183,6 @@
           </div>
         </div>
 
-        <!-- RAG 来源 -->
         <div class="jd-rag" v-if="jdResult.ragSources?.length">
           <h4>参考知识库（{{ jdResult.ragSources.length }} 条）</h4>
           <div v-for="(src, i) in jdResult.ragSources" :key="i" class="jd-rag-item">
@@ -198,8 +191,18 @@
             <span class="jd-rag-snippet">{{ src.snippet }}</span>
           </div>
         </div>
+      </div>
 
-        <template #footer>
+      <!-- Footers: 作为 el-dialog 的直接子级 -->
+      <template #footer>
+        <template v-if="jdStep === 0">
+          <el-button @click="jdDialogVisible = false">取消</el-button>
+          <el-button type="primary" :disabled="!jdStudentId || !jdText.trim()" :loading="jdLoading" @click="startOptimize">开始分析</el-button>
+        </template>
+        <template v-else-if="jdStep === 1">
+          <span />
+        </template>
+        <template v-else-if="jdStep === 2">
           <el-button @click="jdDialogVisible = false">取消</el-button>
           <el-button type="primary" :loading="jdApplying" @click="applyOptimize">
             确认应用（{{ checkedCount }} 条）
